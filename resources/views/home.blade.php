@@ -37,7 +37,21 @@
                 @method('DELETE')
                 <p><button>Delete Post</button>
             </form>
+            <div style="text-align:right;" >
+                <h5> Write a Comment </h5>
+                <form action = "/posts/{{$post->id}}/comments" method = "POST">
+                    @csrf
+                    
+                    <label for="author"> Commenting as {{auth()->user()->name}} </label>                                     
+                    <textarea name="text"></textarea>
+                    <p><button>Comment</button>
+                       
+                </form>
+            </div>
         </div>
+
+        
+
         @endforeach
     </div>
 
