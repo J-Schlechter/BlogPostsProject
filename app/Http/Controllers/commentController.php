@@ -2,31 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\commentRequest;
+
+//use App\Models\Post;
 use App\Models\Comment;
-use App\Models\Post;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 
 class CommentController extends Controller
 {
-    public function store(Post $post, commentRequest $request)
-    {   
-        $validatedData = $request->validated();
-        $comment = new Comment();
+    public function createComment(Request $request){
+        $incommingFields = $request->validate([
+            
+            'post_id'=> 'required|exists:posts,id',
+            'text' =>'required',
 
-        $comment->post_id = $post->id;
-        $comment->author = auth()->user();
-        $comment->text = $validatedData['text'];
-        $comment->save();
-        
+        ]);
 
         
+        $incommingFields['text'] = strip_tags($incommingFields['text']);
+        $incommingFields['user_id'] = auth()->id();
+        Log::info(json_encode($request->all()));
+        Comment::create($incommingFields);
+        return redirect('/');
+      
 
-        $validatedData['user_id'] = auth()->id();
-
-        Comment::create($validatedData);
-
-        return redirect()->back();
     }
 
     public function destroy(Comment $comment)
@@ -35,7 +35,7 @@ class CommentController extends Controller
             $comment->delete();
         }
 
-        return redirect()->back();
+        return redirect('/');
     }
 
 }

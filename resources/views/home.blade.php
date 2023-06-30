@@ -28,7 +28,7 @@
     <div style="border: 3px solid black;">
         <h2> All Posts </h2>
         @foreach($posts as $post)
-        <div style="background-color: gray; padding: 10px; margin:10px; border: 1px solid black;">
+        <div style="background-color: gray; padding: 20px; margin:200px; border: 1px solid black;">
             <h3>{{ $post['title']}} by {{$post->user->name}} </h3>
             <p>{{ $post['body'] }}</p>
             <p><a href="/edit-post/{{ $post->id }}"> Edit </a></p>
@@ -37,11 +37,11 @@
                 @method('DELETE')
                 <p><button>Delete Post</button>
             </form>
-            <div style="text-align:right;" >
+            <div style="text-align:right; padding: 200px" >
                 <h5> Write a Comment </h5>
-                <form action = "/posts/{{$post->id}}/comments" method = "POST">
+                <form action = "/comment" method = "POST">
                     @csrf
-                    
+                    <input type="hidden" name="post_id" value="{{ $post->id }}">
                     <label for="author"> Commenting as {{auth()->user()->name}} </label>                                     
                     <textarea name="text"></textarea>
                     <p><button>Comment</button>
