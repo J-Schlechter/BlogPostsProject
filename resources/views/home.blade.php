@@ -17,20 +17,22 @@
 
     <div style="border: 3px solid black;">
         <h2> Write a Post </h2>
-        <form action = "/create-post" method = "POST">
+        <form action = "/newpost" method = "GET">
         @csrf
-            <p><input type = "text" name = "title" placeholder="Your post's title">
-            <p><textarea  cols="50" rows="8" name="body" placeholder="Write your post here!"></textarea>
-            <p><button>Post</button>
+            <p><button>New Post</button>
         </form>
     </div>
 
     <div style="border: 3px solid black;">
         <h2> All Posts </h2>
         @foreach($posts as $post)
-        <div style="background-color: gray; padding: 20px; margin:200px; border: 1px solid black;">
+        <div style="background-color: gray; padding: 20px; margin:20px; border: 1px solid black;">
             <h3>{{ $post['title']}} by {{$post->user->name}} </h3>
             <p>{{ $post['body'] }}</p>
+            <form action = "edit-post/{{$post->id}}" method="GET">
+                @csrf
+                <button>Edit Post</button>
+            </form>
             <p><a href="/edit-post/{{ $post->id }}"> Edit </a></p>
             <form action = "/delete-post/{{ $post->id }}" method = "POST">
             @csrf
@@ -44,10 +46,18 @@
                     <input type="hidden" name="post_id" value="{{ $post->id }}">
                     <label for="author"> Commenting as {{auth()->user()->name}} </label>                                     
                     <textarea name="text"></textarea>
-                    <p><button>Comment</button>
-                       
+                    <p><button>Comment</button>                       
                 </form>
+                <form action = "/viewComments/{{$post->id}}" method = "GET">
+                    
+                    <button>View comments for this post</button>
+                    
+                    <input type="hidden" name="post_id" value="{{ $post->id }}"> 
+                </form>
+               
+                    
             </div>
+            
         </div>
 
         
@@ -57,23 +67,16 @@
 
     @else
     <div style="border: 3px solid black;">
-        <h2>Register</h2>
-        <form action="/register" method="POST">
-        @csrf
-            <input type="text" placeholder="name" name='name'>
-            <input type="text" placeholder="email" name='email'>
-            <input type="password" placeholder="password" name='password'>
-            <button>Register</button>
-        </form>
-    </div>
-
-    <div style="border: 3px solid black;">
         <h2>Log In</h2>
         <form action="/login" method="POST">
         @csrf
             <input type="text" placeholder="name" name='loginname'>
             <input type="password" placeholder="password" name='loginpassword'>
             <button>Log In</button>
+        </form>
+        <form action="/registernew" method="GET">
+        @csrf
+            <label>Click here to register a new user <button>Register</button></label>
         </form>
     </div>
     @endauth

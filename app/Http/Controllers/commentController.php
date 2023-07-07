@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 //use App\Models\Post;
 use App\Models\Comment;
+use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -28,6 +29,15 @@ class CommentController extends Controller
       
 
     }
+
+    public function viewComments($postId)
+    {
+        $post = Post::find($postId);
+        $comments = Comment::where('post_id', $postId)->get();
+
+        return view('viewcomments', ['post' => $post, 'comments' => $comments]);
+    }
+    
 
     public function destroy(Comment $comment)
     {
