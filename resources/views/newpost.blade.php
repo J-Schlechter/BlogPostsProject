@@ -1,4 +1,4 @@
-<form action="/create-post" method="POST" enctype="multipart/form-data">
+<form action="/upload-image" method="POST" enctype="multipart/form-data">
     @csrf
 
     <div>
@@ -19,11 +19,7 @@
     
 
     
-    <div>
-        @if (session('imagePath'))
-            <img src="{{ asset('storage/' . session('imagePath')) }}" alt="Uploaded Image" width="200">
-        @endif
-    </div>
+    
 
     <button type="submit">Create Post</button>
 </form>

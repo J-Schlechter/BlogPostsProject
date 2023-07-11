@@ -66,19 +66,7 @@
     </div>
 
     @else
-    <div style="border: 3px solid black;">
-        <h2>Log In</h2>
-        <form action="/login" method="POST">
-        @csrf
-            <input type="text" placeholder="name" name='loginname'>
-            <input type="password" placeholder="password" name='loginpassword'>
-            <button>Log In</button>
-        </form>
-        <form action="/registernew" method="GET">
-        @csrf
-            <label>Click here to register a new user <button>Register</button></label>
-        </form>
-    </div>
+    <script>window.location = "/logins";</script>
     @endauth
            
 </body>
