@@ -23,8 +23,9 @@ class CommentController extends Controller
         
         $incommingFields['text'] = strip_tags($incommingFields['text']);
         $incommingFields['user_id'] = auth()->id();
-        Log::info(json_encode($request->all()));
-        Comment::create($incommingFields);
+        //Log::info(json_encode($request->all()));
+        $comment = Comment::create($incommingFields);
+        dd($comment);
         return redirect('/');
       
 

@@ -1,4 +1,4 @@
-<form action="/upload-image" method="POST" enctype="multipart/form-data">
+<form action="/create-post" method="POST" enctype="multipart/form-data">
     @csrf
 
     <div>
@@ -11,11 +11,19 @@
         <textarea id="body" name="body" placeholder="Write your post here!" required></textarea>
     </div>
     
-    <div>
-        
-        <label for="image">Upload Image:</label>
-        <input type="file" name="image">
-    </div>
+    <div class="file is-normal">
+        <label class="file-label">
+          <input class="file-input" type="file" name="image">
+          <span class="file-cta">
+            <span class="file-icon">
+              <i class="fas fa-upload"></i>
+            </span>
+            <span class="file-label">
+              Normal file…
+            </span>
+          </span>
+        </label>
+      </div>
     
 
     

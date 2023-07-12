@@ -8,7 +8,7 @@
 </head>
 <body>
     <div  class = "container  ">
-        <section class="section is-centered" >
+        <section class="section" >
             <h3 class = "title">{{ $post->title}} by {{$post->user->name}} </h3>
             <p>{{ $post->body }}</p>
         </section>
@@ -16,12 +16,23 @@
     <div >
         <section class = "section mx"> 
         <form action="/viewcomments" method="POST">
+
         @csrf
         
-        <h2 class="title is-2"><br>Comments:<br></h2>
+        <h2 class="title is-2" style="border-block-color: black"><br>Comments:<br></h2>
         @foreach($comments as $comment)
-            <h6 class="title">{{$comment->user->name}}</h6>
-            <h5 class="subtitle">{{ $comment['text']}}</h5>
+        <div class="card ">
+            <header class="card-header">
+                <h6 class="title">{{$comment->user->name}}</h6>
+            </header>
+            <div class="card-content py-3">
+              <div class="content">
+                <h5>{{ $comment['text']}}</h5>
+              </div>
+            </div>
+          </div>
+            {{--  --}}
+            
                       
         @endforeach    
         </form>
