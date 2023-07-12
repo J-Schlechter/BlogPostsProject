@@ -31,6 +31,7 @@ class PostController extends Controller
         $validatedData['image_path'] = $imagePath;
         
         $post = Post::create($validatedData);
+        Log::info(json_encode($post->image_path));
         return redirect('/')->with('image', $imageName);
         
 

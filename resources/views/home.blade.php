@@ -93,10 +93,8 @@
                 <p><button>Delete Post</button>
             </form>
             <div>
-                <figure class="image is-128x128">
-                    <img src="{{$post->$imagePath}}">
-                  </figure>
-                
+                <img src = "{{ asset($post->image_path)}}">
+                <img src = "{{ asset('E:\APPS\PHP WORK\laravel-project\gitHubSetUpTest\BlogPostsProject\storage\app'). '/'.$post->image_path}}">
             </div>
             <div style="text-align:right; padding: 200px" >
                 <h5> Write a Comment </h5>
