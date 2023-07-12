@@ -45,9 +45,9 @@
                     
                     <div class="buttons" >
                         <form action = "/logout" method = "POST">
-                            <a class="button is-light">
+                            <button class="button is-light" onclick="/logout">
                             Log Out
-                            </a>
+                            </button>
                         </form>
                 </div>
               </div>
@@ -92,6 +92,12 @@
                 @method('DELETE')
                 <p><button>Delete Post</button>
             </form>
+            <div>
+                <figure class="image is-128x128">
+                    <img src="{{$post->$imagePath}}">
+                  </figure>
+                
+            </div>
             <div style="text-align:right; padding: 200px" >
                 <h5> Write a Comment </h5>
                 <form action = "/comment" method = "POST">

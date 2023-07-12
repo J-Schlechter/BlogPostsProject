@@ -31,13 +31,13 @@ class PostController extends Controller
         $validatedData['image_path'] = $imagePath;
         
         $post = Post::create($validatedData);
-        dd($post);
+        return redirect('/')->with('image', $imageName);
+        
 
     } else {
         $imagePath = null;
     }
-    return redirect('/')->with('success', 'Post created successfully!');
-    //->with('image', $imageName);
+    
     }
 
     public function uploadImage(Request $request){
