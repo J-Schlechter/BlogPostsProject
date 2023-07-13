@@ -24,15 +24,16 @@ class PostController extends Controller
     if ($request->hasFile('image')) {
 
         $imageName = time().'.'.$request->image->extension();
-        $imagePath = $request->file('image')->storeAs('public/images', $imageName);
+        $imagePath = $request->file('image')->storeAs('public/images',$imageName);
+        //dd($imagePath);
         $validatedData['title'] = strip_tags($validatedData['title']);
         $validatedData['body'] = strip_tags($validatedData['body']);
         $validatedData['user_id'] = auth()->id();
-        $validatedData['image_path'] = $imagePath;
+        $validatedData['image_path'] = $imageName;
         
         $post = Post::create($validatedData);
-        Log::info(json_encode($post->image_path));
-        return redirect('/')->with('image', $imageName);
+        //Log::info(json_encode($post->image_path));
+        return redirect('/')->with('image', $imagePath);
         
 
     } else {

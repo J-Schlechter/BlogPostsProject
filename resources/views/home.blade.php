@@ -45,29 +45,30 @@
                     
                     <div class="buttons" >
                         <form action = "/logout" method = "POST">
+                          @csrf
                             <button class="button is-light" onclick="/logout">
                             Log Out
                             </button>
                         </form>
+                        
                 </div>
+                
               </div>
             </div>
           </div>
         </div>
-    </div>
+      </div>
       </nav>
+      <br>
+      <p style="text-align:right;"><b> Welcome {{Auth::user()->name}} </b></p>
 
 
 
 
-
-    <p><b> Welcome {{Auth::user()->name}} </b></p>
-    <p style="text-align:right;"> You are logged in! </p>
-    <form style="text-align:right;" action = "/logout" method = "POST">
-        @csrf
-        <button> Log Out </button>
-    </form>
-
+    
+    
+    
+    
     <div style="border: 3px solid black;">
         <h2> Write a Post </h2>
         <form action = "/newpost" method = "GET">
@@ -93,8 +94,12 @@
                 <p><button>Delete Post</button>
             </form>
             <div>
-                <img src = "{{ asset($post->image_path)}}">
-                <img src = "{{ asset('E:\APPS\PHP WORK\laravel-project\gitHubSetUpTest\BlogPostsProject\storage\app'). '/'.$post->image_path}}">
+                
+
+                <figure class="image is-128x128">
+                     <img src = "{{ url('storage/images/'.$post->image_path)}}"> 
+                     {{-- <img src = 'https://bulma.io/images/placeholders/128x128.png'> --}}
+                </figure>
             </div>
             <div style="text-align:right; padding: 200px" >
                 <h5> Write a Comment </h5>

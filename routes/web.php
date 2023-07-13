@@ -18,10 +18,10 @@ use App\Http\Controllers\UserController;
 */
 
 Route::get('/', function () {
-    $posts = auth()->user()->usersPosts()->latest()->get();
-    //$posts = Post::withCount('comments')
-       // ->orderBy('comments_count', 'desc')
-        //->get();
+    //$posts = auth()->user()->usersPosts()->latest()->get();
+    $posts = Post::withCount('comments')
+        ->orderBy('comments_count', 'desc')
+        ->get();
     
     //$posts = Post::where('user_id', auth()->id())->get();
     return view('home', ['posts' => $posts]);
