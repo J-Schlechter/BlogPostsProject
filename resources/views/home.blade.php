@@ -7,7 +7,7 @@
     <title>Home</title>
 </head>
 <body>
-    
+   
     @auth
     <nav class="navbar " role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
