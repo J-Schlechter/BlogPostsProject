@@ -29,6 +29,13 @@ Route::get('/', function () {
 });
 
 
+Route::get('/yourPosts', function () {
+    
+    $posts = Post::where('user_id', auth()->id())->get();
+    return view('users-posts', ['posts' => $posts]);
+    //return view('home');
+});
+
 
 
 Route::post('/register', [UserController::class, 'register']);
@@ -37,11 +44,14 @@ Route::post('/login', [UserController::class, 'login']);
 
 
 Route::post('/upload-image', [PostController::class, 'uploadImage']);
-Route::post('/create-post', [PostController::class, 'createPost']);
+Route::post('/create-post', [PostController::class, 'createPost', 'as' => 'create-post']);
 Route::get('/edit-post/{post}', [PostController::class, 'showEditScreen']);
 Route::put('/edit-post/{post}', [PostController::class, 'updatePost']);
 Route::delete('/delete-post/{post}', [PostController::class, 'deletePost']);
+
+
 Route::post('/comment', [CommentController::class,'createComment']);
+Route::get('/viewComments/{post_id}', [CommentController::class,'viewComments']);    
 
 Route::get('/logins', function() {
     return view('logins');
@@ -54,16 +64,5 @@ Route::get('/registernew', function() {
 Route::get('/newpost', function() {
         return view('newpost');
     });
-    
 
-Route::get('/viewComments/{post_id}', [CommentController::class,'viewComments']);    
-//Route::get('/viewcomments/{post_id}', function($post) {
-   // $comments = Comment::where('post_id', $post->id)->get();
-        //$comments = Comment::where('post_id' , $post->id);
-        //$posts = Post::where('post_id', $post->id);
-    
-        //$posts = Post::where('user_id', auth()->id())->get();
-        //return view('home', ['posts' => $posts]);
-  //  return view('viewcomments', ['comments' => $comments, 'posts' => $post]);
-   // });
 

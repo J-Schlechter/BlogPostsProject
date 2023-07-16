@@ -25,7 +25,7 @@ class CommentController extends Controller
         $incommingFields['user_id'] = auth()->id();
         //Log::info(json_encode($request->all()));
         $comment = Comment::create($incommingFields);
-        dd($comment);
+        //dd($comment);
         return redirect('/');
       
 

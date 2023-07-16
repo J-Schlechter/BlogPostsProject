@@ -7,7 +7,7 @@
     <title>Home</title>
 </head>
 <body style="background-image: url('https://cdn.pixabay.com/photo/2017/08/30/01/05/milky-way-2695569_1280.jpg');">
-  
+   
     @auth
     <nav class="navbar is-primary " role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
@@ -50,8 +50,8 @@
       </nav>
       <nav class="breadcrumb is-centered" aria-label="breadcrumbs">
         <ul>
-          <li class="is-active"><a href="#" aria-current="page">All Posts</a></li>
-          <li><a href="/yourPosts">Your posts</a></li>
+          <li><a href="/">All Posts</a></li>
+          <li class="is-active"><a href="/yourPosts" aria-current="page">Your posts</a></li>
                    
         </ul>
       </nav>        
@@ -60,11 +60,9 @@
           <div class="notification is-primary">
             <div style="background-color: gray; padding: 20px; margin:20px; border: 1px solid black;">
           
-            <h1 class = 'title'>{{ $post['title']}} </h1>
-            <p><b>by {{$post->user->name}}</b></p>
+            <h1 class = 'title'>{{ $post['title']}} by {{$post->user->name}}</h1>
             <br>
             <h2 class="subtitle">{{ $post['body'] }}</h2>
-            @if($post->user_id === Auth::user()->id)
             <form action = "edit-post/{{$post->id}}" method="GET">
                 @csrf
                 <button class="button is-warning">Edit Post</button>
@@ -74,8 +72,6 @@
                 @method('DELETE')
                 <button class="button is-danger">Delete Post</button>
             </form>
-            @else
-            @endif
             <div>
                 
               @if($post->image_path !== null)
@@ -95,10 +91,10 @@
                     <label for="author"> Commenting as {{auth()->user()->name}} </label>                                     
                     <textarea name="text"></textarea>
                     <p><button class="button is-success">Comment</button>                       
-                    </form>
-                    <form action = "/viewComments/{{$post->id}}" method = "GET">
-                        
-                        <button class="button is-info">View comments for this post</button>
+                </form>
+                <form action = "/viewComments/{{$post->id}}" method = "GET">
+                    
+                    <button class="button is-info">View comments for this post</button>
                     
                     <input type="hidden" name="post_id" value="{{ $post->id }}"> 
                 </form>
@@ -115,94 +111,7 @@
     </div>
 
     @else
-    <nav class="navbar is-primary " role="navigation" aria-label="main navigation">
-      <div class="navbar-brand">
-        <a class="navbar-item" href="/">
-          <figure class = "image-is-520x520">
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTO8oyb6fe_lzSVWIrAhdO9rCWCWeVzkkREuUvx6lVZXZq-ZvgVP4yF85RmE0FstWdhSJ4&usqp=CAU">
-          </figure>
-          </a>      
-        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="true" data-target="navbarBasicExample">
-          
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </a>
-      </div>
-    
-      <div id="navbaBlog" class="navbar-menu">
-        <div class="navbar-start">
-          <a class="navbar-item" href="/">Home</a>
-          <a class = "navbar-item">|</a>
-          <a class="navbar-item" href="/registernew">Register</a>
-        </div>
-        <div class="navbar-end">
-          <div class = "navbar-item">
-            <b> No user signed in </b>
-          </div>
-          <div class="navbar-item">   
-                  <div class="buttons" >
-                      <form action = "/logins" method = "GET">
-                        @csrf
-                          <button class="button is-info">
-                          Log In
-                          </button>
-                      </form>    
-              </div>
-            </div>
-          </div>
-        </div>
-      
-    </nav>
-    <nav class="breadcrumb is-centered" aria-label="breadcrumbs">
-      <ul>
-        
-        <li class="is-active"><a href="#" aria-current="page">All Posts</a></li>
-                 
-      </ul>
-    </nav>        
-      @foreach($posts as $post)
-      <div class="container is-max-desktop pb-3">
-        <div class="notification is-primary">
-          <div style="background-color: gray; padding: 20px; margin:20px; border: 1px solid black;">
-        
-          <h1 class = 'title'>{{ $post['title']}}</h1>
-          <p><b>by {{$post->user->name}}</b></p>
-          <br>
-          <h2 class="subtitle">{{ $post['body'] }}</h2>
-          <div>   
-            @if($post->image_path !== null)
-              <figure class="image is-128x128">
-                   <img src = "{{ url('storage/images/'.$post->image_path)}}"> 
-                   {{-- <img src = 'https://bulma.io/images/placeholders/128x128.png'> --}}
-              </figure>
-            @else
-            @endif
-             
-          </div>
-          <div style="text-align:right" >
-              <form action = "/logins" method = "GET">
-                @csrf
-                  <button class="button is-info">
-                    Log in to comment
-                  </button><br><br>
-              <form action = "/viewComments/{{$post->id}}" method = "GET">
-                  
-                <button class="button is-info">View comments for this post</button>
-                  
-                  <input type="hidden" name="post_id" value="{{ $post->id }}"> 
-              </form>
-             
-                  
-          </div>
-          
-      </div>
-      
-
-        </div>
-      </div>
-      @endforeach
-  </div>
+    <script>window.location = "/logins";</script>
     @endauth
            
 </body>

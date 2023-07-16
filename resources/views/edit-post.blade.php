@@ -8,66 +8,57 @@
 </head>
 
 
-<body bgcolor="">
-
-    <nav class="navbar " role="navigation" aria-label="main navigation">
-        <div class="navbar-brand">
-          <a class="navbar-item" href="https://bulma.io">
-            <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
-          
-            </a>      
-          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="true" data-target="navbarBasicExample">
-            
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-          </a>
+<body style="background-image: url('https://cdn.pixabay.com/photo/2017/08/30/01/05/milky-way-2695569_1280.jpg');">
+  <nav class="navbar is-primary " role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">
+        <figure class = "image-is-520x520">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTO8oyb6fe_lzSVWIrAhdO9rCWCWeVzkkREuUvx6lVZXZq-ZvgVP4yF85RmE0FstWdhSJ4&usqp=CAU">
+        </figure>
+        </a>      
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="true" data-target="navbarBasicExample">
         
-      
-        <div id="navbarBasicExample" class="navbar-menu">
-          <div class="navbar-start">
-            <a class="navbar-item" href="#">Home</a>
-            <a class="navbar-item" href="#">Documentation</a>
-            <div class="navbar-item has-dropdown is-hoverable">
-              <a class="navbar-link">More</a>
-              <div class="navbar-dropdown">
-                <a class="navbar-item" href="#">About</a>
-                <a class="navbar-item" href="#">Jobs</a>
-                <a class="navbar-item" href="#">Contact</a>
-                <hr class="navbar-divider">
-                <a class="navbar-item" href="#">Report an issue</a>
-              </div>
-            </div>
-          </div>
-      
-          <div class="navbar-end">
-            <div class="navbar-item">
-              <div class="buttons">
-                <a class="button is-primary">
-                  <strong>Sign up</strong>
-                </a>
-                <a class="button is-light">
-                  Log in
-                </a>
-              </div>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+  
+    <div id="navbaBlog" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="/">Home</a>
+        <a class = "navbar-item">|</a>
+        <a class="navbar-item" href="/newpost">New Post</a>
+      </div>
+      <div class="navbar-end">
+        <div class = "navbar-item">
+          <b> Welcome {{Auth::user()->name}} </b>
+        </div>
+        <div class="navbar-item">   
+                <div class="buttons" >
+                    <form action = "/logout" method = "POST">
+                      @csrf
+                        <button class="button is-danger" onclick="/logout">
+                        Log Out
+                        </button>
+                    </form>    
             </div>
           </div>
         </div>
-    </div>
-      </nav>
-
-
-
-    <div class="columns is-mobile">
-        <div class="column  is-offset-one-quarter">    
-    <h2 class = "title is-2">Edit Post</h2>
-    <div class = "column is-three-quarters">
+      </div>
+    
+  </nav>
+    <div class="columns">
+        <div class="column  is-offset-one-quarter is-half">    
+          
+    <h2 class = "title is-2" style="color: aliceblue">Edit Your Post</h2>
     <form action ="/edit-post/{{$post->id}}" method="POST">
     @csrf
     @method('PUT')
-    
-        <span> Title: <input class="input is-black is-three-quarters" type = "text" name = "title" value = " {{$post->title}}"></span>
-        <br><br><textarea cols="50" rows="8" name = "body">{{$post->body}}  </textarea>
+    <div class ="field">
+      
+        <span style="color: aliceblue"> Title: <input class="input is-three-quarters" type = "text" name = "title" value = " {{$post->title}}"></span>
+        <br><br><textarea class= "textarea" name = "body">{{$post->body}}  </textarea>
         <br><br><button class="button is-success">Save changes</button>
     </form>
     </div>

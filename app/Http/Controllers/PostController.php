@@ -32,12 +32,19 @@ class PostController extends Controller
         $validatedData['image_path'] = $imageName;
         
         $post = Post::create($validatedData);
-        //Log::info(json_encode($post->image_path));
-        return redirect('/')->with('image', $imagePath);
+        
+        return redirect('/');
         
 
     } else {
-        $imagePath = null;
+        $validatedData['title'] = strip_tags($validatedData['title']);
+        $validatedData['body'] = strip_tags($validatedData['body']);
+        $validatedData['user_id'] = auth()->id();
+        $validatedData['image_path'] = null;
+        
+        $post = Post::create($validatedData);
+        
+        return redirect('/');
     }
     
     }

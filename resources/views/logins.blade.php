@@ -6,11 +6,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <title>Log In</title>
 </head>
-<body>
-
-    <div class="columns is-mobile">
-        <div class="column is-half is-offset-half">
-        <h2 class = "title is-2">Log In</h2>
+<body style="background-image: url('https://cdn.pixabay.com/photo/2017/08/30/01/05/milky-way-2695569_1280.jpg');">
+    <div class="container is-max-desktop pb-3">
+        <div class="columns is-centered">
+            <div class="column is-half">
+                <h1 class = "title is-1" style="color: aliceblue">Log In</h1>
         <form action="/login" method="POST">
         @csrf
             <input class= "input" type="text" placeholder="name" name='loginname' style = "width: 33%">
@@ -30,6 +30,7 @@
             </form>
         </div>
     </div>
+</div>
 </div>
            
 </body>
