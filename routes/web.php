@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\CommentController;
+use App\Http\Controllers\commentController;
 use App\Http\Controllers\PostController;
 use App\Models\Comment;
 use App\Models\Post;
@@ -50,8 +50,8 @@ Route::put('/edit-post/{post}', [PostController::class, 'updatePost']);
 Route::delete('/delete-post/{post}', [PostController::class, 'deletePost']);
 
 
-Route::post('/comment', [CommentController::class,'createComment']);
-Route::get('/viewComments/{post_id}', [CommentController::class,'viewComments']);    
+Route::post('/comment', [commentController::class,'createComment']);
+Route::get('/viewComments/{post_id}', [commentController::class,'viewComments']);    
 
 Route::get('/logins', function() {
     return view('logins');

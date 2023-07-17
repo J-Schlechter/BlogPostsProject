@@ -10,7 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 
-class CommentController extends Controller
+
+class commentController extends Controller
 {
     public function createComment(Request $request){
         $incommingFields = $request->validate([
