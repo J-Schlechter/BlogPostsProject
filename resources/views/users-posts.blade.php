@@ -81,13 +81,16 @@
               @endif
                
             </div>
-            <div style="text-align:right" >
-                <h5> Write a Comment </h5>
+            <div class="columns is-mobile">
+              <div class="column is-4 is-offset-8">
+                <div style="text-align:right" >
                 <form action = "/comment" method = "POST">
                     @csrf
                     <input type="hidden" name="post_id" value="{{ $post->id }}">
                     <label for="author"> Commenting as {{auth()->user()->name}} </label>                                     
-                    <textarea name="text"></textarea>
+                    <textarea class="textarea is-small has-fixed-size" name="text" rows="3"
+                  placeholder="Write a Comment"></textarea>
+                  <br>
                     <p><button class="button is-success">Comment</button>                       
                 </form>
                 <form action = "/viewComments/{{$post->id}}" method = "GET">
@@ -99,7 +102,9 @@
                
                     
             </div>
-            
+              </div>
+            </div>
+
         </div>
         
 
