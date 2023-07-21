@@ -32,8 +32,12 @@ Route::get('/', function () {
 Route::get('/yourPosts', function () {
     
     $posts = Post::where('user_id', auth()->id())->get();
+    if($posts != null){
     return view('users-posts', ['posts' => $posts]);
     //return view('home');
+    }else{
+        return redirect('/');
+    }
 });
 
 

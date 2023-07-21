@@ -13,10 +13,18 @@
                 <h1 class = "title is-1" style="color: aliceblue">Log In</h1>
         <form action="/login" method="POST">
         @csrf
-            <input class= "input" type="text" placeholder="name" name='loginname' style = "width: 33%">
+            <input class= "input" type="text" placeholder="name" name='name' style = "width: 33%">
             <br><br>
-            <input class = "input" type="password" placeholder="password" name='loginpassword' style = "width: 33%">
+            <input class = "input" type="password" placeholder="password" name='password' style = "width: 33%">
             <br><br>
+            @if ($error = $errors->first('password'))
+            <article class="message is-danger">
+                <div class="message-header">
+                  <p>{{ $error }}</p>
+                
+                </div>
+            </article>
+            @endif
             <div class = "field">
                 <div class = "control">
                     <button class = "button is-success">Log In</button>
