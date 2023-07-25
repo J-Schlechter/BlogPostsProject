@@ -17535,18 +17535,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_helloworld__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/helloworld */ "./resources/js/components/helloworld.vue");
 /* harmony import */ var _components_navbar__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/navbar */ "./resources/js/components/navbar.vue");
 
-
+//import Vue from 'vue'
 
 
 //import App from './Vue/App.vue'
 
 
 
-var app = (0,vue__WEBPACK_IMPORTED_MODULE_1__.createApp)({});
-app.component('hello', _components_helloworld__WEBPACK_IMPORTED_MODULE_2__["default"]);
+var app = (0,vue__WEBPACK_IMPORTED_MODULE_1__.createApp)();
 app.component('navigation', _components_navbar__WEBPACK_IMPORTED_MODULE_3__["default"]);
-app.mount('#navigation');
-app.mount('#hello');
+app.component('hello', _components_helloworld__WEBPACK_IMPORTED_MODULE_2__["default"]);
+app.mount("#app");
+//app.mount('#app')
+//app.component('hello', helloworld)
+//app.component('navigation', navbar)
+//app.mount('#navigation')
+//app.mount('#hello')
 
 //createApp(App).mount("#app")
 

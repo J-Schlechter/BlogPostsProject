@@ -1,16 +1,13 @@
 <template>
 
-<section class="section">
-    <div class="container">
+    <div>
       <h1 class="title">
         Hello World
       </h1>
-      <p class="subtitle">
+      <p>
         My first website with <strong>Bulma and vue</strong>!
       </p>
     </div>
-  </section>
-
 </template>
 
 <script>
