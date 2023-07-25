@@ -7,13 +7,15 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
   </head>
   <body>
+
     <div id="app">
-      <navigation />
-      <hello /> 
+      <div>
+      <app></app>
+      </div>
     </div>
-    <br>
     
-    </div>
+    
+    
     <script defer src="{{mix('js/app.js')}}"></script>
   </body>
   

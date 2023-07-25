@@ -1,6 +1,6 @@
 <template>
 
-    <div>
+    <div class="helloworld">
       <h1 class="title">
         Hello World
       </h1>
