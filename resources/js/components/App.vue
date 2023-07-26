@@ -2,18 +2,24 @@
     <div>
 
       <navigation /> <!-- Assuming you have a 'navigation' component -->
-      <helloworld />
+
+
+      <breadcrumb />
+      <posts />
+      
     </div>
   </template>
   
   <script>
   import navigation from './navbar.vue';
-  import helloworld from './helloworld.vue';
+  import breadcrumb from './breadcrumb.vue';
+  import posts from './posts.vue';
   
   export default {
     components: {
       navigation,
-      helloworld,
+      breadcrumb,
+      posts,
       // Add more components as needed
     },
   };
