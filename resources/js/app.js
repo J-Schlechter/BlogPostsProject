@@ -4,7 +4,8 @@ import App from './components/App.vue';
 import helloworld from './components/helloworld.vue';
 import navbar from './components/navbar.vue';
 import breadcrumb from './components/breadcrumb.vue';
-import posts from './components/posts.vue';
+import allPosts from './components/allPosts.vue';
+import newPost from './components/newPost.vue';
 
 const app = createApp(App);
 // Register the 'hello' component globally
@@ -12,7 +13,8 @@ const app = createApp(App);
 // Uncomment the line below if you want to use the 'navigation' component globally
 app.component('navigation', navbar);
 app.component('breadcrumb', breadcrumb);
-app.component('posts', posts);
+app.component('allPosts', allPosts);
+app.component('newPost', newPost);
 // Create the Vue app instance
 
 

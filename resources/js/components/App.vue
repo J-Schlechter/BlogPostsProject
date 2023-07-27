@@ -2,24 +2,26 @@
     <div>
 
       <navigation /> <!-- Assuming you have a 'navigation' component -->
-
-
       <breadcrumb />
-      <posts />
+      
       
     </div>
+    <allPosts />
+    <newPost />
   </template>
   
   <script>
   import navigation from './navbar.vue';
   import breadcrumb from './breadcrumb.vue';
-  import posts from './posts.vue';
+  import allPosts from './allPosts.vue';
+  import newPost from './newPost.vue';
   
   export default {
     components: {
       navigation,
       breadcrumb,
-      posts,
+      allPosts,
+      newPost,
       // Add more components as needed
     },
   };

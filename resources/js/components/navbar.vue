@@ -20,7 +20,8 @@
       <div class="navbar-start">
         <a class="navbar-item" href="/">Home</a>
         <a class="navbar-item">|</a>
-        <a class="navbar-item" href="/newpost">New Post</a>
+        <a class="navbar-item js-modal-trigger" data-target="modal-js-newPost">New Post</a>
+
       </div>
       <div class="navbar-end">
         <!-- Display the authenticated user's name -->
