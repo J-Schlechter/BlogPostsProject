@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html>
   <head>
     <meta charset="utf-8">
@@ -12,11 +13,16 @@
       <div>
       <app></app>
       </div>
+      <h1>Hellos</h1>
     </div>
     
     
     
-    <script defer src="{{mix('js/app.js')}}"></script>
+    <script defer src="{{mix('js/app.js')}}">
+    
+  
+    </script>
+    
   </body>
   
 </html>

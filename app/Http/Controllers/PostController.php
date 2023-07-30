@@ -100,4 +100,13 @@ class PostController extends Controller
         $post->update($incommingFields);
         return redirect('/');
     }
+
+    public function getPosts()
+    {
+        // Fetch posts from the database using the Post model
+        $posts = Post::with('user')->get();
+
+        // Return the posts as an array
+        return $posts->toArray();
+    }
 }

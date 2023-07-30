@@ -1,51 +1,88 @@
 <template>
   <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
     <!-- Navbar brand/logo -->
-    <div class="navbar-brand">
-      <a class="navbar-item" href="/">
-        <figure class="image-is-520x520">
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTO8oyb6fe_lzSVWIrAhdO9rCWCWeVzkkREuUvx6lVZXZq-ZvgVP4yF85RmE0FstWdhSJ4&usqp=CAU">
-        </figure>
-      </a>
-      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="true" data-target="navbarBasicExample">
-        <!-- Hamburger icon for mobile navigation -->
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </a>
-    </div>
+    <!-- ... Your brand/logo HTML code ... -->
 
     <!-- Navbar menu items -->
-    <div id="navbaBlog" class="navbar-menu">
+    <div id="navbarBlog" class="navbar-menu" :class="{ 'is-active': isMenuOpen }">
       <div class="navbar-start">
         <a class="navbar-item" href="/">Home</a>
-        <a class="navbar-item">|</a>
-        <a class="navbar-item js-modal-trigger" data-target="modal-js-newPost">New Post</a>
-
+        <a class="navbar-item">{{isAuthenticated }}</a> <!-- Debug: Display isAuthenticated -->
+        <template v-if="isAuthenticated">
+          <a class="navbar-item">
+            <button @click="openNewPostModal" class="button is-success">New Post</button>
+          </a>
+        </template>
       </div>
       <div class="navbar-end">
-        <!-- Display the authenticated user's name -->
-        <div class="navbar-item">
-          
-        </div>
-        <div class="navbar-item">
-          <!-- Logout button -->
-          <div class="buttons">
-            <form action="/logout" method="POST">
-              
-              <button class="button is-danger" onclick="/logout">
-                Log Out
-              </button>
-            </form>
+        <!-- Show different content based on the authentication status -->
+        <template v-if="isAuthenticated">
+          <div class="navbar-item">Logged in as {{ currentUser }}</div>
+          <!-- Show logout button when logged in -->
+          <button class="button is-danger" @click="logout">Log Out</button>
+        </template>
+        <template v-else>
+          <div class="navbar-item">
+            <div>Logged in as Guest</div>
+            <div class="buttons">
+              <button class="button is-danger" @click="logout">Log Out</button>
+              <button class="button is-info" @click="openLoginModal">Log In</button>
+              <button class="button is-warning" @click="openRegisterModal">Register</button>
+            </div>
           </div>
-        </div>
+        </template>
       </div>
     </div>
   </nav>
 </template>
 
 <script>
-export default{
+import { defineComponent, computed, ref } from 'vue';
 
-}
+export default {
+  
+  props: { isMenuOpen : { type: Boolean }, isAuthenticated : { type: Boolean }, currentUser : {type: String} },
+  
+  setup(props, { emit }) {
+    // Destructure the props directly
+    const { isMenuOpen, isAuthenticated, currentUser } = props;
+    
+    // Computed property to get the current user's name or 'Guest' when not authenticated
+    const currentUserName = computed(() => {
+      return isAuthenticated ? currentUser.name : 'Guest';
+    });
+
+    // Methods
+    const openNewPostModal = () => {
+      emit('open-new-post-modal');
+    };
+
+    const openRegisterModal = () => {
+      emit('open-register-modal');
+    };
+
+    const openLoginModal = () => {
+      emit('open-login-modal');
+    };
+
+    const logout = () => {
+      emit('logout');
+    };
+
+    return {
+      // Reactive data
+      currentUserName,
+      
+      // Methods
+      openNewPostModal,
+      openRegisterModal,
+      openLoginModal,
+      logout,
+    };
+  },
+};
 </script>
+
+<style>
+/* Add your custom styles here */
+</style>

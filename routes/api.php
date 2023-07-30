@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\newPostController;
+use App\Http\Controllers\Api\PostController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -18,4 +18,3 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/new-post', '/api/newPostController@createPost');
