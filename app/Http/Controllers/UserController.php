@@ -52,7 +52,7 @@ class UserController extends Controller
   
     public function logout(){
         auth()->logout();
-        return redirect('/');
+        return response()->json(['message' => 'Log Out successful'], 200);
 
     }
 

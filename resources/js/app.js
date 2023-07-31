@@ -28,9 +28,8 @@ app.component('navbar', navbar);
 app.component('breadcrumb', breadcrumb);
 app.component('allPosts', allPosts);
 app.component('NewPostModal', NewPostModal);
-app.component('Registeruser', RegisterUser);
+app.component('RegisterUser', RegisterUser);
 app.component('LoginModal', LoginModal);
-
 
 // Define a reactive ref for isAuthenticated
 const isAuthenticatedRef = ref(isAuthenticated.value);

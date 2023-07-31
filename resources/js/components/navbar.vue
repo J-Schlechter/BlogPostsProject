@@ -42,8 +42,15 @@
 import { defineComponent, computed, ref } from 'vue';
 
 export default {
-  
+  emits: [
+    'open-new-post-modal',
+    'open-login-modal',
+    'open-register-modal',
+    'logout',
+    'login-success',
+  ],
   props: { isMenuOpen : { type: Boolean }, isAuthenticated : { type: Boolean }, currentUser : {type: String} },
+  
   
   setup(props, { emit }) {
     // Destructure the props directly

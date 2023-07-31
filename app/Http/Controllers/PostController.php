@@ -33,7 +33,7 @@ class PostController extends Controller
         
         $post = Post::create($validatedData);
         
-        return redirect('/');
+        return response()->json(['message' => 'Post successful'], 200);
         
 
     } else {
@@ -44,7 +44,7 @@ class PostController extends Controller
         
         $post = Post::create($validatedData);
         
-        return redirect('/');
+        return response()->json(['message' => 'Post successful'], 200);
     }
     
     }

@@ -5,9 +5,11 @@
       <div class="notification is-primary">
         <div style="background-color: gray; padding: 20px; margin:20px; border: 1px solid black;">
           <!-- Render the post content here -->
-          <h1 class='title'>{{ post.title }}</h1><b> by {{ post.user.name }}</b>
+          <b class='title'>{{ post.title }}
+          </b>
+          <br>
           <h2 class='subtitle'>{{ post.body }}</h2>
-          <h2>{{currentUser}}</h2>
+          <h5>Posted by {{ post.user.name }}</h5>
       <!-- Add other post details here as needed -->
       <template v-if="currentUser === post.user.name">
         <form action="edit-post/{{$post->id}}" method="GET">
@@ -38,7 +40,7 @@
 import CommentModal from './CommentModal.vue';
 import { ref } from 'vue';
 import axios from 'axios';
-
+import Swal from 'sweetalert2'
 export default {
   props: {
     posts: {
@@ -87,7 +89,23 @@ export default {
             selectedPost.value = null;
           })
           .catch((error) => {
-            console.error('Error adding comment:', error);
+            
+            if(error.message === "Request failed with status code 422"){
+              Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'You have to enter something in the text field'
+              });
+
+            }
+            else if(error.message === "Request failed with status code 500") {
+              Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'You have to be logged in to comment'
+              });
+            };
+            console.error('You have :', error.message);
           });
       }
     };

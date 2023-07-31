@@ -11,8 +11,8 @@
       @logout="logout"
       @login-success="handleLoginSuccess"  />
     <ConfirmationModal :is-active="isConfirmationModalVisible" @confirmed="deletePost" @canceled="hideConfirmationModal" />
-    <NewPostModal :is-active="isNewPostModalVisible" @open-modal="openNewPostModal" @close-modal="closeNewPostModal" />
-    <LoginModal :is-active="isLoginModalVisible" @open-modal="openLoginModal" @close-modal="closeLoginModal" @login-success="handleLoginSuccess" /> <!-- Pass the login-success event handler -->
+    <NewPostModal :show-New-Post-Prop="showNewPostModal" @open-modal="openNewPostModal" @close-modal="closeNewPostModal"  />
+    <LoginModal :show-Login-Modal="showLoginModal" @open-modal="openLoginModal" @close-modal="closeLoginModal"  @login-success="handleLoginSuccess"/> <!-- Pass the login-success event handler -->
     <RegisterUser :show-modal-prop="showRegisterModal" @open-modal="openRegisterModal" @close-modal="closeRegisterModal" />
     <AllPosts :posts="postsData" :current-user="currentUser" />
   </div>
@@ -27,8 +27,10 @@ import NewPostModal from './NewPostModal.vue';
 import RegisterUser from './RegisterUser.vue';
 import LoginModal from './LoginModal.vue';
 import AllPosts from './allPosts.vue';
+import Swal from 'sweetalert2'
 
 export default defineComponent({
+  emits: ['open-new-post-modal', 'open-login-modal', 'open-register-modal'],
   components: {
     Navbar,
     ConfirmationModal,
@@ -42,29 +44,55 @@ export default defineComponent({
     const isConfirmationModalVisible = ref(false);
     const showNewPostModal = ref(false);
     const showRegisterModal = ref(false);
-    
+    const showLoginModal = ref(false);
     const isAuthenticated = ref(false);
     const currentUser = ref(null);
-
+    const errorMessage = ref('');
     const currentUserName = computed(() => {
       
       return currentUser.value ? currentUser.value : 'Guest';
     });
 
     const logout = () => {
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('isAuthenticated');
-      localStorage.removeItem('userName');
-      isAuthenticated.value = false;
-      currentUser.value = null;
-    };
+      
 
-    const openNewPostModal = () => {
-      isNewPostModalVisible.value = true;
+      Swal.fire({
+          title: 'Are you sure you want to log out?',
+          
+          showCancelButton: true,
+          confirmButtonText: 'Log Out',
+          
+        }).then((result) => {
+          /* Read more about isConfirmed, isDenied below */
+          if (result.isConfirmed) {
+            Swal.fire('Logged out!', '', 'success')
+            axios.post('/logout')
+            .then(response => {
+              localStorage.removeItem('authToken');
+              isAuthenticated.value = false;
+              currentUser.value = null;
+              console.log(response.data);
+              // Reset fields and error message after successful post creation
+              errorMessage.value = '';
+              
+            })
+            .catch(error => {
+              console.error(error);
+              // Set the error message when an error occurs during post saving
+              errorMessage.value = 'An error occurred while logging out. Please try again later.';
+            });
+          } else if (result.isDenied) {
+            
+          }
+        });
+    };
+        
+   const openNewPostModal = () => {
+      showNewPostModal.value = true;
     };
 
     const closeNewPostModal = () => {
-      isNewPostModalVisible.value = false;
+      showNewPostModal.value = false;
     };
 
     const handlePostSaved = (postData) => {
@@ -80,14 +108,23 @@ export default defineComponent({
       alert('An error occurred while saving the new post. Please try again later.');
     };
 
+
+
+
     const newPost = () => {
-      axios
-        .post('/api/posts', fields.value) // Change the API endpoint to match your backend route for creating posts
-        .then((response) => {
-          handlePostSaved(response.data);
+      axios.post('/newPost', fields.value)
+        .then(response => {
+          console.log(response.data);
+          // Reset fields and error message after successful post creation
+          fields.value.title = '';
+          fields.value.body = '';
+          errorMessage.value = '';
+          newPostAlert();
         })
-        .catch((error) => {
-          handlePostSaveError(error);
+        .catch(error => {
+          console.error(error);
+          // Set the error message when an error occurs during post saving
+          errorMessage.value = 'An error occurred while saving the post. Please try again later.';
         });
     };
 
@@ -107,14 +144,13 @@ export default defineComponent({
       isConfirmationModalVisible.value = false;
     };
 
-    const isLoginModalVisible = ref(false);
 
     const openLoginModal = () => {
-      isLoginModalVisible.value = true;
+      showLoginModal.value = true;
     };
 
     const closeLoginModal = () => {
-      isLoginModalVisible.value = false;
+      showLoginModal.value = false;
     };
 
     const handleLoginSuccess = (data) => {
@@ -157,7 +193,7 @@ export default defineComponent({
       openNewPostModal,
       closeLoginModal,
       openLoginModal,
-      isLoginModalVisible,
+      showLoginModal,
       isMenuOpen: ref(false),
       isAuthenticated,
       currentUser,

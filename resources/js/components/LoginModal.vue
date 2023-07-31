@@ -1,5 +1,5 @@
 <template>
-  <div class="modal" :class="{ 'is-active': isActive }">
+  <div class="modal" :class="{ 'is-active': showLoginModal }">
     <div class="modal-background" @click="closeModal"></div>
     <div class="modal-content">
       <div class="box">
@@ -30,59 +30,77 @@
   </div>
 </template>
 
-<script setup>
-import { ref, defineProps, defineEmits } from 'vue';
+
+<script>
+import { ref } from 'vue';
 import axios from 'axios';
 
-// Define the props and emits using the setup argument
-const { isActive } = defineProps(['isActive']);
-const emit = defineEmits();
+export default {
+  props: {
+    showLoginModal: Boolean, // Define the 'showLoginModal' prop
+  },
+  emits: ['close-modal', 'login-success'], // Declare the emits here
 
-const username = ref('');
-const password = ref('');
-const showErrorMessage = ref(false);
-const errorMessage = ref('');
+  setup(props, { emit }) {
+    const username = ref('');
+    const password = ref('');
+    const showErrorMessage = ref(false);
+    const errorMessage = ref('');
 
-const login = () => {
-  const loginData = {
-    name: username.value,
-    password: password.value,
-  };
+    const login = () => {
+      const loginData = {
+        name: username.value,
+        password: password.value,
+      };
 
-  axios
-    .post('/login', loginData)
-    .then((response) => {
-      console.log('login response', response)
-      const authToken = response.data.token;
-      localStorage.setItem('authToken', authToken);
+      axios
+        .post('/login', loginData)
+        .then((response) => {
+          console.log('login response', response);
+          const authToken = response.data.token;
+          localStorage.setItem('authToken', authToken);
 
-      // Emit the login-success event with the user data
-      const userData = response.data.user;
-      console.log(userData);
-      emit('login-success', userData);
+          // Emit the login-success event with the user data
+          const userData = response.data.user;
+          console.log(userData);
+          emit('login-success', userData);
 
-      closeModal(); // Close the modal after successful login
-    })
-    .catch((error) => {
-      console.error(error);
-      if (error.response && error.response.data && error.response.data.errors) {
-        // Handle specific error messages returned by the API
-        // For example, you can display the first error message returned by the API
-        showErrorMessage.value = true;
-        errorMessage.value = Object.values(error.response.data.errors)[0][0];
-      } else {
-        // Handle generic error message
-        showErrorMessage.value = true;
-        errorMessage.value = 'An error occurred during login. Please try again later.';
-      }
-    });
-};
+          closeModal(); // Close the modal after successful login
+        })
+        .catch((error) => {
+          console.error(error);
+          if (error.response && error.response.data && error.response.data.errors) {
+            // Handle specific error messages returned by the API
+            // For example, you can display the first error message returned by the API
+            showErrorMessage.value = true;
+            errorMessage.value = Object.values(error.response.data.errors)[0][0];
+          } else {
+            // Handle generic error message
+            showErrorMessage.value = true;
+            errorMessage.value = 'An error occurred during login. Please try again later.';
+          }
+        });
+    };
 
-const closeModal = () => {
-  emit('update:isActive', false); // Emit the event to update the 'isActive' prop
+    const closeModal = () => {
+      // Emit the 'close-modal' event to parent component
+      emit('close-modal');
+    };
+
+    return {
+      username,
+      password,
+      showErrorMessage,
+      errorMessage,
+      login,
+      closeModal,
+    };
+  },
 };
 </script>
 
 <style>
 /* Add your modal styles here, e.g., centering the modal */
 </style>
+
+

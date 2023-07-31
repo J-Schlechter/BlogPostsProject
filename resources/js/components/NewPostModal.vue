@@ -1,6 +1,6 @@
 <template>
-  <div class="modal" :class="{ 'is-active': isActive }">
-    <div class="modal-background"></div>
+  <div class="modal" :class="{ 'is-active': showNewPostProp }">
+    <div class="modal-background" @click="closeModal"></div>
     <div class="modal-content">
       <div class="box">
         <form @submit.prevent="savePost">
@@ -23,32 +23,66 @@
 
 <script>
 import axios from 'axios';
-import { defineComponent, ref } from 'vue';
+import {  ref, emit } from 'vue';
+import Swal from 'sweetalert2'
 
-export default defineComponent({
+export default ({
+  emits: ['close-modal', 'open-modal'],
   props: {
-    isActive: {
+    showNewPostProp: {
       type: Boolean,
-      required: true,
+      
     },
   },
-  setup() {
+  
+  setup(props, {emit}) {
     const fields = ref({ title: '', body: '' });
     const errorMessage = ref(''); // Reactive property for error message
+    
+    const closeModal = () => {
+      // Emit the 'close-modal' event to parent component
+      emit('close-modal');
+    };
+
+    const newPostAlert = () => {
+      let timerInterval
+      Swal.fire({
+      icon: 'success',
+      title: 'Post Succesfull',
+      html:'<b></b>',
+      timer: 1000,
+      timerProgressBar: true,
+      didOpen: () => {
+        Swal.showLoading()
+        const b = Swal.getHtmlContainer().querySelector('b')
+        timerInterval = setInterval(() => {
+          b.textContent = Swal.getTimerLeft()
+        }, 100)
+      },
+      willClose: () => {
+        clearInterval(timerInterval)
+      }
+    });
+    closeModal();
+    };
 
     const savePost = () => {
-      axios.post('newPost', fields.value)
-        .then(response => {
-          console.log(response);
+      axios
+        .post('/newPost', fields.value)
+        .then((response) => {
+          console.log(response.data);
           // Reset fields and error message after successful post creation
           fields.value.title = '';
           fields.value.body = '';
           errorMessage.value = '';
+          closeModal(); 
+          newPostAlert();// Close the modal after successful post creation
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error);
           // Set the error message when an error occurs during post saving
-          errorMessage.value = 'An error occurred while saving the post. Please try again later.';
+          errorMessage.value =
+            'An error occurred while saving the post. Please try again later.';
         });
     };
 
@@ -56,6 +90,7 @@ export default defineComponent({
       fields,
       errorMessage,
       savePost,
+      closeModal,
     };
   },
 });
