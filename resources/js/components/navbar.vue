@@ -7,7 +7,7 @@
     <div id="navbarBlog" class="navbar-menu" :class="{ 'is-active': isMenuOpen }">
       <div class="navbar-start">
         <a class="navbar-item" href="/">Home</a>
-        <a class="navbar-item">{{isAuthenticated }}</a> <!-- Debug: Display isAuthenticated -->
+        <a class="navbar-item">|</a> <!-- Debug: Display isAuthenticated -->
         <template v-if="isAuthenticated">
           <a class="navbar-item">
             <button @click="openNewPostModal" class="button is-success">New Post</button>
@@ -19,13 +19,14 @@
         <template v-if="isAuthenticated">
           <div class="navbar-item">Logged in as {{ currentUser }}</div>
           <!-- Show logout button when logged in -->
+          <div class="navbar-item">
           <button class="button is-danger" @click="logout">Log Out</button>
+        </div>
         </template>
         <template v-else>
           <div class="navbar-item">
             <div>Logged in as Guest</div>
             <div class="buttons">
-              <button class="button is-danger" @click="logout">Log Out</button>
               <button class="button is-info" @click="openLoginModal">Log In</button>
               <button class="button is-warning" @click="openRegisterModal">Register</button>
             </div>
@@ -34,6 +35,7 @@
       </div>
     </div>
   </nav>
+  <br>
 </template>
 
 <script>
