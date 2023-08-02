@@ -14,7 +14,7 @@
       <div>
       <app></app>
       </div>
-      <h1>Hellos</h1>
+      
     </div>
     
     

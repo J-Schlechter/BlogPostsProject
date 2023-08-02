@@ -8,7 +8,7 @@
           <div class="field">
             <label class="label">Username</label>
             <div class="control">
-              <input class="input" v-model="username" type="text" placeholder="Enter your name" autocomplete="name" name="username" required>
+              <input class="input" v-model="username" type="text" placeholder="Enter your name" autocomplete="name" name="current-name" required>
             </div>
           </div>
 

@@ -7,7 +7,7 @@
         <h1 class="title">Register User</h1>
         <form @submit.prevent="submitForm">
           <div class="field">
-            <label class="label">Name</label>
+            <label class="label">Username</label>
             <div class="control">
               <input class="input" type="text" v-model="formData.name" required autocomplete="current-name">
             </div>
@@ -133,7 +133,21 @@ export default defineComponent({
           }
         })
         .catch((error) => {
-          console.error('Error during registration:', error);
+          if (error.message === "Request failed with status code 422"){
+            Swal.fire({
+                icon: 'error',
+                title: 'Username/Email already registered',
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: () => {
+                  Swal.showLoading();
+                },
+                willClose: () => {
+                  
+                },
+              });
+          }
+         
         });
     };
 

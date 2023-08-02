@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+  <nav class="navbar is-primary is-mobile" role="navigation" aria-label="main navigation">
     <!-- Navbar brand/logo -->
     <!-- ... Your brand/logo HTML code ... -->
 
@@ -8,7 +8,7 @@
       <div class="navbar-start">
         <a class="navbar-item" href="/">Home</a>
         <a class="navbar-item">|</a> <!-- Debug: Display isAuthenticated -->
-        <template v-if="isAuthenticated">
+        <template v-if="isAuthenticated" class="logged">
           <a class="navbar-item">
             <button @click="openNewPostModal" class="button is-success">New Post</button>
           </a>
@@ -16,17 +16,21 @@
       </div>
       <div class="navbar-end">
         <!-- Show different content based on the authentication status -->
-        <template v-if="isAuthenticated">
-          <div class="navbar-item">Logged in as {{ currentUser }}</div>
+        <div></div>
+        <template v-if="isAuthenticated" >
+          
           <!-- Show logout button when logged in -->
-          <div class="navbar-item">
+          <div class="navbar-item logged-in-button">
+          <div class="navbar-item logged-in-text">Logged in as {{ currentUser }}   </div>
           <button class="button is-danger" @click="logout">Log Out</button>
         </div>
         </template>
+        
         <template v-else>
-          <div class="navbar-item">
-            <div>Logged in as Guest</div>
-            <div class="buttons">
+          <div>
+            
+            <div class="buttons logged-out-button">
+              <div class="navbar-item logged-out-text">Not Logged in</div>
               <button class="button is-info" @click="openLoginModal">Log In</button>
               <button class="button is-warning" @click="openRegisterModal">Register</button>
             </div>
@@ -93,5 +97,16 @@ export default {
 </script>
 
 <style>
-/* Add your custom styles here */
+.logged-in-button, .logged-out-button {
+  padding-right: 10px;
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.logged-in-text, .logged-out-text {
+  padding-right: 20px;
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
 </style>

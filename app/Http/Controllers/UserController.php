@@ -32,7 +32,7 @@ class UserController extends Controller
                 'user' => $user,
             ], 200);
         } else {
-            $errors = new MessageBag(['password' => ['Email and/or password invalid.']]);
+            $errors = new MessageBag(['password' => ['Name and/or password invalid.']]);
             Log::error('Login attempt failed', ['credentials' => $credentials]);
             return response()->json(['errors' => $errors], 401);
         }

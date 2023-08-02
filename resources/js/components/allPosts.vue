@@ -58,7 +58,7 @@ export default {
       default: null,
     },
   },
-
+  
   data() {
     return {
       showEditPostModal: false,
@@ -69,7 +69,7 @@ export default {
 
   methods: {
     reloadPosts() {
-      
+      this.posts.$forceUpdate();
 
     },
 
@@ -86,6 +86,7 @@ export default {
             .delete(`/delete-post/${post.id}`)
             .then((response) => {
               console.log('Post deleted:', response.data);
+              this.posts = this.posts.filter((p) => p.id !== post.id);
               Swal.fire({
                 icon: 'success',
                 title: 'Post Successfully Deleted',
@@ -156,9 +157,10 @@ export default {
                   Swal.showLoading();
                 },
                 willClose: () => {
-                  window.location.reload()
+                  
                 },
               });
+              reloadPosts();
         })
         .catch((error) => {
           console.error('Error fetching post:', error);
@@ -242,7 +244,7 @@ h5 {
 }
 
 .button-container {
-  text-align: center; /* Center the buttons */
+  text-align: right; /* Center the buttons */
   margin-top: 10px; /* Add margin between the buttons and post content */
 }
 

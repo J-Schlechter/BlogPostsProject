@@ -56,6 +56,8 @@ export default defineComponent({
     LoginModal,
     AllPosts,
   },
+
+  
   setup() {
     const isNewPostModalVisible = ref(false);
     const isConfirmationModalVisible = ref(false);
