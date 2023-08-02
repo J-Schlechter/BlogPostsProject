@@ -1,37 +1,43 @@
 <template>
-  <div :key="renderKey">
+  <div>
     <div v-for="post in posts" :key="post.id">
-      <div class="container is-max-desktop pb-3">
-        <div class="notification is-primary">
-          <div style="background-color: gray; padding: 20px; margin:20px; border: 1px solid black;">
-            <!-- Render the post content here -->
-            <b class='title'>{{ post.title }}</b>
-            <br>
-            <h2 class='subtitle'>{{ post.body }}</h2>
-            <h5>Posted by {{ post.user.name }}</h5>
-            <!-- Add other post details here as needed -->
-            <template v-if="currentUser === post.user.name">
-              <form action="edit-post/{{$post->id}}" method="GET">
-                <button class="button is-warning">Edit Post</button>
-              </form>
+      <div class="container is-max-desktop pb-3 rounded-block">
+        <div class="notification is-primary rounded-block">
+          <div class="columns">
+            <div class="column is-half ">
+              <b class="title">{{ post.title }}</b>
               <br>
-              <button class="button is-danger" @click="deletePost(post)">
-                Delete Post
-              </button>
-            </template>
-            <button class="button is-primary" @click="viewComments(post)">View Comments</button>
+              <h2 class="subtitle">{{ post.body }}</h2>
+              <h5>Posted by {{ post.user.name }}</h5>
+              <div class="button-container">
+                <!-- Add other post details here as needed -->
+                <template v-if="currentUser === post.user.name">
+                  <button class="button is-warning" @click="viewEditPostModal(post)">Edit Post</button>
+                  <button class="button is-danger" @click="deletePost(post)">Delete Post</button>
+                </template>
+                <button class="button has-background-warning-dark" @click="viewComments(post)">View Comments</button>
+              </div>
+            </div>
+            <div class="column is-half is-flex is-justify-content-center">
+              <!-- Display the image -->
+              <div v-if="post.image_path === null"></div>
+              <div v-else>
+                <img :src="'/storage/images/' + post.image_path" alt="Post Image" style="max-width: 100%; max-height: 200px; margin-top: 10px;" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
+    <Edit-Post-Modal v-if="showEditPostModal" :post="editingPost" @save-post="savePost" @close="closeEditPostModal" />
+    <comment-modal
+      v-if="selectedPost"
+      :post="selectedPost"
+      :comments="selectedPost.comments"
+      @add-comment="addComment"
+      @close="selectedPost = null"
+    />
   </div>
-  <comment-modal
-    v-if="selectedPost"
-    :post="selectedPost"
-    :comments="selectedPost.comments"
-    @add-comment="addComment"
-    @close="selectedPost = null"
-  />
 </template>
 
 <script>
@@ -39,9 +45,9 @@ import CommentModal from './CommentModal.vue';
 import { ref, getCurrentInstance } from 'vue';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import EditPostModal from './EditPostModal.vue';
 
 export default {
-
   props: {
     posts: {
       type: Array,
@@ -53,15 +59,22 @@ export default {
     },
   },
 
-  methods: {
+  data() {
+    return {
+      showEditPostModal: false,
+      editingPost: null,
+      selectedPost: null, // Define the selectedPost data property
+    };
+  },
 
-    reloadPosts () {
-      console.log(getCurrentInstance())
+  methods: {
+    reloadPosts() {
+      
+
     },
 
     async deletePost(post) {
       console.log(post);
-      const vm = this;
       Swal.fire({
         title: 'Are you sure you want to delete this post?',
         showDenyButton: true,
@@ -80,12 +93,8 @@ export default {
                 timerProgressBar: true,
                 didOpen: () => {
                   Swal.showLoading();
-
                 },
                 willClose: () => {
-                  reloadPosts()
-                  
-                  //instance.proxy.$forceUpdate();
                   
                 },
               });
@@ -103,74 +112,145 @@ export default {
         }
       });
     },
-    
 
-
-    
-
-  },
-
-  setup(props) {
-    const selectedPost = ref(null);
-
-    const viewComments = (post) => {
+    viewEditPostModal(post) {
       axios
-        .get(`/viewComments/${post.id}`)
+        .get(`/showEditScreen/${post.id}`)
         .then((response) => {
-          selectedPost.value = { ...post, comments: response.data };
+          console.log(response.data);
+          this.editingPost = { ...post, postind: response.data };
+          this.showEditPostModal = true;
         })
         .catch((error) => {
           console.error('Error fetching comments:', error);
         });
-    };
+    },
 
-    const addComment = (newCommentText) => {
-      console.log(newCommentText)
-      console.log(selectedPost.value.id)
-      if (selectedPost.value) {
-        const post_id = selectedPost.value.id;
+    closeEditPostModal() {
+      this.editingPost = null;
+      this.showEditPostModal = false;
+    },
+
+    viewComments(post) {
+      axios
+        .get(`/viewComments/${post.id}`)
+        .then((response) => {
+          this.selectedPost = { ...post, comments: response.data };
+        })
+        .catch((error) => {
+          console.error('Error fetching post:', error);
+        });
+    },
+
+    savePost(newPostData) {
+      axios
+        .put(`/edit-post/${newPostData.id}`, { title: newPostData.title, body: newPostData.body })
+        .then((response) => {
+          this.selectedPost = null;
+          Swal.fire({
+                icon: 'success',
+                title: 'Post Successfully Edited',
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: () => {
+                  Swal.showLoading();
+                },
+                willClose: () => {
+                  window.location.reload()
+                },
+              });
+        })
+        .catch((error) => {
+          console.error('Error fetching post:', error);
+        });
+    },
+
+    addComment(newCommentText) {
+      console.log(newCommentText);
+      console.log(this.selectedPost.id);
+      if (this.selectedPost) {
+        const post_id = this.selectedPost.id;
         axios
-          .post(`/addComment/${post_id}`,{ text: newCommentText })
+          .post(`/addComment/${post_id}`, { text: newCommentText })
           .then((response) => {
-            
             // Close the comment modal after adding the comment
-            selectedPost.value = null;
+            this.selectedPost = null;
+            Swal.fire({
+                icon: 'success',
+                title: 'Commented Successfully',
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: () => {
+                  Swal.showLoading();
+                },
+                willClose: () => {
+                  
+                },
+              });
           })
           .catch((error) => {
-            
-            if(error.message === "Request failed with status code 422"){
+            if (error.message === 'Request failed with status code 422') {
               Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: 'You have to enter something in the text field'
+                icon: 'error',
+                title: 'Oops...',
+                text: 'You have to enter something in the text field',
               });
-
+            } else if (error.message === 'Request failed with status code 500') {
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'You have to be logged in to comment',
+              });
             }
-            else if(error.message === "Request failed with status code 500") {
-              Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: 'You have to be logged in to comment'
-              });
-            };
-            console.error('You have :', error.message);
+            console.error('Error:', error.message);
           });
       }
-
-      
-    };
-
-
-    return {
-      selectedPost,
-      viewComments,
-      addComment,
-      
-    };
+    },
   },
 
   components: {
     CommentModal,
+    EditPostModal,
   },
 };
 </script>
+<style>
+/* Add custom styling for the post list */
+.container {
+  margin-top: 20px; /* Add margin to separate each post container */
+  border: 1px solid black; /* Add a border around the post container */
+  background-color: gray; /* Set the background color */
+  padding: 20px; /* Add padding inside the container */
+}
+
+.columns {
+  margin: 0; /* Remove default margin for columns */
+}
+
+.title {
+  margin-bottom: 10px;
+  text-align: left; /* Center the post title */
+}
+
+.subtitle {
+  margin-top: 10px;
+  text-align: left; /* Center the post body */
+}
+
+h5 {
+  text-align: left; /* Center the post author name */
+}
+
+.button-container {
+  text-align: center; /* Center the buttons */
+  margin-top: 10px; /* Add margin between the buttons and post content */
+}
+
+/* Optional: Add some spacing between posts */
+.container:not(:first-child) {
+  margin-top: 30px;
+}
+.rounded-block {
+  border-radius: 10px;
+}
+</style>

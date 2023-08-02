@@ -46,8 +46,9 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, emit } from 'vue';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default defineComponent({
   props: {
@@ -99,26 +100,41 @@ export default defineComponent({
         return; // Abort registration if any field is invalid
       }
 
-      try {
-        // All fields are valid, proceed with registration
-        const response = await axios.post('/register', formData.value);
-        // Assuming the server returns a success message
-        console.log(response.data.message);
-        showSuccessMessage.value = true; // Show the success message
-        successMessage.value = response.data.message; // Set the success message text
-        // Clear the form fields after successful registration
-        formData.value.name = '';
-        formData.value.email = '';
-        formData.value.password = '';
-        errors.value = {
-          name: '',
-          email: '',
-          password: '',
-        }; // Clear the error messages
-      } catch (error) {
-        console.error(error);
-        // Handle error here (show error message, etc.)
-      }
+      axios
+        .post('/register', formData.value)
+        .then((response) => {
+          emit('close-modal')
+          if (response.data.message === 'Registration successful') {
+            Swal.fire({
+                icon: 'success',
+                title: 'User Successfully Registered.',
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: () => {
+                  Swal.showLoading();
+                },
+                willClose: () => {
+                  
+                },
+              });
+            const userData = response.data.user;
+            formData.value.name = '';
+            formData.value.email = '';
+            formData.value.password = '';
+            errors.value = {
+              name: '',
+              email: '',
+              password: '',
+            };
+            emit('close-modal');
+            closeModal(); // Close the modal after successful login
+          } else {
+            console.error('Registration failed:', response.data.message);
+          }
+        })
+        .catch((error) => {
+          console.error('Error during registration:', error);
+        });
     };
 
     // Return the data and methods you want to expose in the template

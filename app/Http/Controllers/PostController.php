@@ -66,13 +66,11 @@ class PostController extends Controller
 
 
     public function showEditScreen(Post $post){ 
-        if(auth()->user()->id !== $post['user_id']) {
-            return redirect('/');
-        }
-
         
 
-        return view('edit-post', ['post' => $post]);
+        
+        return response()->json(['post' => $post], 200);
+        
     }
 
     public function deletePost(Post $post){
@@ -85,9 +83,6 @@ class PostController extends Controller
         
     }
     public function updatePost(Post $post, Request $request){
-        if(auth()->user()->id !== $post['user_id']) {
-            return redirect('/');
-        }
 
         
 
@@ -99,15 +94,18 @@ class PostController extends Controller
         $incommingFields['title'] = strip_tags($incommingFields['title']);
         $incommingFields['body'] = strip_tags($incommingFields['body']);
         $post->update($incommingFields);
-        return redirect('/');
+        return response()->json(['message' => 'Post deleted successfully']);
     }
 
     public function getPosts()
     {
-        // Fetch posts from the database using the Post model
-        $posts = Post::with('user')->get();
+        $posts = Post::withCount('comments')
+                 ->with('user')
+                 ->orderBy('comments_count', 'desc') // Sort by the comments count in descending order
+                 ->get();
 
-        // Return the posts as an array
-        return $posts->toArray();
+    // Return the posts as an array
+    return $posts->toArray();
+
     }
 }

@@ -31,7 +31,7 @@
       @open-modal="openRegisterModal"
       @close-modal="closeRegisterModal"
     />
-    <AllPosts :posts="postsData" :current-user="currentUser" @load-posts="loadPosts" />
+    <AllPosts :posts="postsData" :current-user="currentUser"  />
   </div>
 </template>
 
@@ -101,7 +101,7 @@ export default defineComponent({
     };
 
     const closeNewPostModal = () => {
-      post.$forceUpdate();
+      
       showNewPostModal.value = false;
     };
 
@@ -161,10 +161,22 @@ export default defineComponent({
     };
 
     const handleLoginSuccess = (data) => {
-      console.log('API Response:', data);
+      
       isAuthenticated.value = true;
       currentUser.value = data.name;
       closeLoginModal();
+      Swal.fire({
+                icon: 'success',
+                title: 'User Successfully Logged in.',
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: () => {
+                  Swal.showLoading();
+                },
+                willClose: () => {
+                  
+                },
+              });
     };
 
     const postsData = ref([]);
