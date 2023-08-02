@@ -2,19 +2,36 @@
   <div>
     <Navbar
       :isMenuOpen="isMenuOpen"
-      
       :currentUser="currentUser"
       :isAuthenticated="isAuthenticated"
       @open-new-post-modal="openNewPostModal"
       @open-login-modal="openLoginModal"
       @open-register-modal="openRegisterModal"
       @logout="logout"
-      @login-success="handleLoginSuccess"  />
-    <ConfirmationModal :is-active="isConfirmationModalVisible" @confirmed="deletePost" @canceled="hideConfirmationModal" />
-    <NewPostModal :show-New-Post-Prop="showNewPostModal" @open-modal="openNewPostModal" @close-modal="closeNewPostModal"  />
-    <LoginModal :show-Login-Modal="showLoginModal" @open-modal="openLoginModal" @close-modal="closeLoginModal"  @login-success="handleLoginSuccess"/> <!-- Pass the login-success event handler -->
-    <RegisterUser :show-modal-prop="showRegisterModal" @open-modal="openRegisterModal" @close-modal="closeRegisterModal" />
-    <AllPosts :posts="postsData" :current-user="currentUser" />
+      @login-success="handleLoginSuccess"
+    />
+    <ConfirmationModal
+      :is-active="isConfirmationModalVisible"
+      @confirmed="deletePost"
+      @canceled="hideConfirmationModal"
+    />
+    <NewPostModal
+      :show-New-Post-Prop="showNewPostModal"
+      @open-modal="openNewPostModal"
+      @close-modal="closeNewPostModal"
+    />
+    <LoginModal
+      :show-Login-Modal="showLoginModal"
+      @open-modal="openLoginModal"
+      @close-modal="closeLoginModal"
+      @login-success="handleLoginSuccess"
+    />
+    <RegisterUser
+      :show-modal-prop="showRegisterModal"
+      @open-modal="openRegisterModal"
+      @close-modal="closeRegisterModal"
+    />
+    <AllPosts :posts="postsData" :current-user="currentUser" @load-posts="loadPosts" />
   </div>
 </template>
 
@@ -27,7 +44,7 @@ import NewPostModal from './NewPostModal.vue';
 import RegisterUser from './RegisterUser.vue';
 import LoginModal from './LoginModal.vue';
 import AllPosts from './allPosts.vue';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 
 export default defineComponent({
   emits: ['open-new-post-modal', 'open-login-modal', 'open-register-modal'],
@@ -49,57 +66,52 @@ export default defineComponent({
     const currentUser = ref(null);
     const errorMessage = ref('');
     const currentUserName = computed(() => {
-      
       return currentUser.value ? currentUser.value : 'Guest';
     });
 
     const logout = () => {
-      
-
       Swal.fire({
-          title: 'Are you sure you want to log out?',
-          
-          showCancelButton: true,
-          confirmButtonText: 'Log Out',
-          
-        }).then((result) => {
-          /* Read more about isConfirmed, isDenied below */
-          if (result.isConfirmed) {
-            Swal.fire('Logged out!', '', 'success')
-            axios.post('/logout')
-            .then(response => {
+        title: 'Are you sure you want to log out?',
+        showCancelButton: true,
+        confirmButtonText: 'Log Out',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire('Logged out!', '', 'success');
+          axios
+            .post('/logout')
+            .then((response) => {
               localStorage.removeItem('authToken');
               isAuthenticated.value = false;
               currentUser.value = null;
-              console.log(response.data);
-              // Reset fields and error message after successful post creation
               errorMessage.value = '';
-              
             })
-            .catch(error => {
+            .catch((error) => {
               console.error(error);
-              // Set the error message when an error occurs during post saving
-              errorMessage.value = 'An error occurred while logging out. Please try again later.';
+              errorMessage.value =
+                'An error occurred while logging out. Please try again later.';
             });
-          } else if (result.isDenied) {
-            
-          }
-        });
+        } else if (result.isDenied) {
+          // Handle cancel
+        }
+      });
     };
-        
-   const openNewPostModal = () => {
+
+    const openNewPostModal = () => {
       showNewPostModal.value = true;
     };
 
     const closeNewPostModal = () => {
+      post.$forceUpdate();
       showNewPostModal.value = false;
     };
 
     const handlePostSaved = (postData) => {
       console.log('New post data:', postData);
       closeNewPostModal();
-      fields.title = '';
-      fields.body = '';
+      // Assuming fields is a ref that holds post data
+      fields.value.title = '';
+      fields.value.body = '';
+      
       alert('New post created successfully!');
     };
 
@@ -108,22 +120,18 @@ export default defineComponent({
       alert('An error occurred while saving the new post. Please try again later.');
     };
 
-
-
-
     const newPost = () => {
-      axios.post('/newPost', fields.value)
-        .then(response => {
+      axios
+        .post('/newPost', fields.value)
+        .then((response) => {
           console.log(response.data);
-          // Reset fields and error message after successful post creation
           fields.value.title = '';
           fields.value.body = '';
           errorMessage.value = '';
-          newPostAlert();
+          this.$forceUpdate();
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error);
-          // Set the error message when an error occurs during post saving
           errorMessage.value = 'An error occurred while saving the post. Please try again later.';
         });
     };
@@ -144,7 +152,6 @@ export default defineComponent({
       isConfirmationModalVisible.value = false;
     };
 
-
     const openLoginModal = () => {
       showLoginModal.value = true;
     };
@@ -157,14 +164,8 @@ export default defineComponent({
       console.log('API Response:', data);
       isAuthenticated.value = true;
       currentUser.value = data.name;
-      
-      
-      //userData.currentUser = userData.name; // Assuming the API response contains user data with 'id', 'name', 'email', etc.
-      //console.log('API data', userData.currentUser, );
       closeLoginModal();
     };
-
-    
 
     const postsData = ref([]);
 
@@ -172,7 +173,6 @@ export default defineComponent({
       axios
         .get('/posts') // Change the API endpoint to match your backend route for fetching posts
         .then((response) => {
-          
           postsData.value = response.data;
         })
         .catch((error) => {
@@ -206,3 +206,7 @@ export default defineComponent({
   },
 });
 </script>
+
+<style>
+/* Add your custom styles here */
+</style>

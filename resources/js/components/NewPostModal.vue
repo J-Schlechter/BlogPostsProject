@@ -61,6 +61,7 @@ export default ({
       },
       willClose: () => {
         clearInterval(timerInterval)
+        
       }
     });
     closeModal();

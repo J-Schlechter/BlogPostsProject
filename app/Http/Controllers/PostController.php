@@ -78,8 +78,9 @@ class PostController extends Controller
     public function deletePost(Post $post){
         if(auth()->user()->id === $post['user_id']) {
             $post->delete();
+            return response()->json(['message' => 'Post deleted successfully']);
         }
-        return redirect('/');
+        return response()->json(['message' => 'Post deleted successfully']);
         
         
     }
