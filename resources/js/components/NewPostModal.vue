@@ -21,7 +21,7 @@
           <!-- Add the image upload section -->
           <div class="field">
             <label class="label">Upload Image</label>
-            <div class="file">
+            <div class="file is-warning">
               <label class="file-label">
                 <input class="file-input" type="file" name="image" @change="onImageChange" />
                 <span class="file-cta">
@@ -29,7 +29,7 @@
                     <i class="fas fa-upload"></i>
                   </span>
                   <span class="file-label">
-                    Choose a file…
+                    Choose an image less than 1mb...
                   </span>
                 </span>
               </label>
@@ -92,7 +92,10 @@ export default {
       const formData = new FormData();
       formData.append('title', fields.value.title);
       formData.append('body', fields.value.body);
-      formData.append('image', imageFile.value);
+
+      if (imageFile.value !== null) {
+        formData.append('image', imageFile.value);
+      }
 
       axios
         .post('/newPost', formData)
@@ -102,9 +105,22 @@ export default {
           fields.value.body = '';
           errorMessage.value = '';
           newPostAlert();
-          
-        })
+    })
         .catch((error) => {
+
+          Swal.fire({
+              icon: 'success',
+              title: 'Post error',
+              text: 'Image size too big. Recommended less than 1mb',
+              timer: 1000,
+              timerProgressBar: true,
+              didOpen: () => {
+                Swal.showLoading();
+              },
+              willClose: () => {
+                closeModal();
+              },
+            });
           console.error(error);
           errorMessage.value =
             'An error occurred while saving the post. Please try again later.';

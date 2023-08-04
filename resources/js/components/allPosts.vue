@@ -1,6 +1,5 @@
 <template>
   <div>
-    
     <div v-for="post in postsData" :key="post.id">
       <div class="container is-max-desktop pb-3 rounded-block">
         <div class="notification is-primary rounded-block">
@@ -239,7 +238,6 @@ export default {
       viewComments,
       savePost,
       addComment,
-      
     };
   },
 

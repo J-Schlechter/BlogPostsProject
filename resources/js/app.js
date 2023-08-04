@@ -2,7 +2,6 @@ import { createApp, ref } from 'vue';
 import App from './components/App.vue';
 
 import navbar from './components/navbar.vue';
-import breadcrumb from './components/breadcrumb.vue';
 import allPosts from './components/allPosts.vue';
 import NewPostModal from './components/NewPostModal.vue';
 import RegisterUser from './components/RegisterUser.vue';
@@ -28,7 +27,7 @@ axios.interceptors.request.use(
 const app = createApp(App);
 
 app.component('navbar', navbar);
-app.component('breadcrumb', breadcrumb);
+
 app.component('allPosts', allPosts);
 app.component('NewPostModal', NewPostModal);
 app.component('RegisterUser', RegisterUser);

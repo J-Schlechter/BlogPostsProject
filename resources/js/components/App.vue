@@ -10,11 +10,7 @@
       @logout="logout"
       @login-success="handleLoginSuccess"
     />
-    <breadcrumb
-      :chosen-post="chosenPost"
-      @all-posts="viewAllPosts"
-      @user-posts="viewUserPosts"
-    />
+    
     <ConfirmationModal
       :is-active="isConfirmationModalVisible"
       @confirmed="deletePost"
@@ -50,7 +46,7 @@ import RegisterUser from './RegisterUser.vue';
 import LoginModal from './LoginModal.vue';
 import AllPosts from './allPosts.vue';
 import Swal from 'sweetalert2';
-import Breadcrumb from './breadcrumb.vue';
+
 
 export default defineComponent({
   components: {
@@ -60,7 +56,6 @@ export default defineComponent({
     RegisterUser,
     LoginModal,
     AllPosts,
-    Breadcrumb,
   },
 
   setup( props, {emit}) {
@@ -69,8 +64,8 @@ export default defineComponent({
     const showNewPostModal = ref(false);
     const showRegisterModal = ref(false);
     const showLoginModal = ref(false);
-    const isAuthenticated = ref(false);
-    const currentUser = ref(null);
+    const isAuthenticated = ref();
+    const currentUser = ref();
     const errorMessage = ref('');
     const postsData = ref([]);
 
@@ -79,6 +74,16 @@ export default defineComponent({
     const currentUserName = computed(() => {
       return currentUser.value ? currentUser.value : 'Guest';
     });
+
+    const allPostBreadcrumb = () => {
+      chosenPost.value = 'allPosts';
+      console.log(chosenPost.value)
+    };
+
+    const userPostBreadcrumb = () => {
+      chosenPost.value = 'userPosts';
+      console.log(chosenPost.value)
+    };
 
     const logout = () => {
       Swal.fire({
@@ -125,15 +130,7 @@ export default defineComponent({
       alert('An error occurred while saving the new post. Please try again later.');
     };
 
-    const allPostBreadcrumb = () => {
-      chosenPost.value = 'allPosts';
-      console.log(chosenPost.value)
-    };
-
-    const userPostBreadcrumb = () => {
-      chosenPost.value = 'userPosts';
-      console.log(chosenPost.value)
-    };
+    
 
     const openRegisterModal = () => {
       showRegisterModal.value = true;
@@ -176,6 +173,7 @@ export default defineComponent({
     };
 
     const viewAllPosts = () => {
+      allPostBreadcrumb();
       chosenPost.value = 'allPosts';
       axios
         .get('/posts')
@@ -188,11 +186,13 @@ export default defineComponent({
     };
 
     const viewUserPosts = () => {
+      userPostBreadcrumb();
       chosenPost.value = 'userPosts';
       axios
         .get('/yourPosts')
         .then((response) => {
           postsData.value = response.data;
+          console.log(postsData.value);
         })
         .catch((error) => {
           console.error('Error fetching posts data:', error);
@@ -200,14 +200,7 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      axios
-        .get('/posts')
-        .then((response) => {
-          postsData.value = response.data;
-        })
-        .catch((error) => {
-          console.error('Error fetching posts data:', error);
-        });
+      viewUserPosts();
     });
 
     return {

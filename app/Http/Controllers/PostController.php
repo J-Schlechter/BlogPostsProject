@@ -14,7 +14,7 @@ class PostController extends Controller
             
             'title' => 'required',
             'body' => 'required',
-            'image' => 'image|mimes:jpeg,png,jpg,gif',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
 
         ]);
     
@@ -109,12 +109,6 @@ class PostController extends Controller
 
     }
 
-    public function yourPosts() {
     
-        $posts = Post::where('user_id', auth()->id())->get();
-        return $posts->toArray();
-        
-        
-    }
 
 }
