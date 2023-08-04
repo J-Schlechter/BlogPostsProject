@@ -108,4 +108,13 @@ class PostController extends Controller
     return $posts->toArray();
 
     }
+
+    public function yourPosts() {
+    
+        $posts = Post::where('user_id', auth()->id())->get();
+        return $posts->toArray();
+        
+        
+    }
+
 }

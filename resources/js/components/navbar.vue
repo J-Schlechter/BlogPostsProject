@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar is-primary is-mobile" role="navigation" aria-label="main navigation">
+  <nav class="navbar is-primary is-touch" role="navigation" aria-label="main navigation">
     <!-- Navbar brand/logo -->
     <!-- ... Your brand/logo HTML code ... -->
 

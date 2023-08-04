@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div v-for="post in posts" :key="post.id">
+    
+    <div v-for="post in postsData" :key="post.id">
       <div class="container is-max-desktop pb-3 rounded-block">
         <div class="notification is-primary rounded-block">
           <div class="columns">
@@ -10,7 +11,6 @@
               <h2 class="subtitle">{{ post.body }}</h2>
               <h5>Posted by {{ post.user.name }}</h5>
               <div class="button-container">
-                <!-- Add other post details here as needed -->
                 <template v-if="currentUser === post.user.name">
                   <button class="button is-warning" @click="viewEditPostModal(post)">Edit Post</button>
                   <button class="button is-danger" @click="deletePost(post)">Delete Post</button>
@@ -19,7 +19,6 @@
               </div>
             </div>
             <div class="column is-half is-flex is-justify-content-center">
-              <!-- Display the image -->
               <div v-if="post.image_path === null"></div>
               <div v-else>
                 <img :src="'/storage/images/' + post.image_path" alt="Post Image" style="max-width: 100%; max-height: 200px; margin-top: 10px;" />
@@ -30,7 +29,7 @@
       </div>
     </div>
     <Edit-Post-Modal v-if="showEditPostModal" :post="editingPost" @save-post="savePost" @close="closeEditPostModal" />
-    <comment-modal
+    <CommentModal
       v-if="selectedPost"
       :post="selectedPost"
       :comments="selectedPost.comments"
@@ -42,12 +41,14 @@
 
 <script>
 import CommentModal from './CommentModal.vue';
-import { ref, getCurrentInstance } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import EditPostModal from './EditPostModal.vue';
+import NewPostModal from './NewPostModal.vue';
 
 export default {
+  //emits: ['save-post'],
   props: {
     posts: {
       type: Array,
@@ -58,23 +59,40 @@ export default {
       default: null,
     },
   },
-  
-  data() {
-    return {
-      showEditPostModal: false,
-      editingPost: null,
-      selectedPost: null, // Define the selectedPost data property
-    };
+  watch: {
+    // Watch for the save-post event
+    $App: {
+      handler(eventName) {
+        debugger;
+        if (eventName === 'save-post') {
+          this.reloadPosts(); // Trigger the reloadPosts method
+        }
+      },
+      deep: true,
+    },
   },
 
-  methods: {
-    reloadPosts() {
-      this.posts.$forceUpdate();
+  setup(props, {emit}) {
+    const postsData = ref(props.posts);
+    const showEditPostModal = ref(false);
+    const editingPost = ref(null);
+    const selectedPost = ref(null);
+    const postCount = ref(null);
+    const reloadPosts = () => {
+      axios
+        .get('/posts')
+        .then((response) => {
+          console.log(response.data)
+          postsData.value = response.data;
+        })
+        .catch((error) => {
+          console.error('Error fetching posts data:', error);
+        });
+    };
 
-    },
 
-    async deletePost(post) {
-      console.log(post);
+
+    const deletePost = (post) => {
       Swal.fire({
         title: 'Are you sure you want to delete this post?',
         showDenyButton: true,
@@ -86,7 +104,7 @@ export default {
             .delete(`/delete-post/${post.id}`)
             .then((response) => {
               console.log('Post deleted:', response.data);
-              this.posts = this.posts.filter((p) => p.id !== post.id);
+              postsData.value = postsData.value.filter((p) => p.id !== post.id);
               Swal.fire({
                 icon: 'success',
                 title: 'Post Successfully Deleted',
@@ -112,42 +130,43 @@ export default {
           Swal.fire('Changes are not saved', '', 'info');
         }
       });
-    },
+    };
 
-    viewEditPostModal(post) {
+    const viewEditPostModal = (post) => {
       axios
         .get(`/showEditScreen/${post.id}`)
         .then((response) => {
           console.log(response.data);
-          this.editingPost = { ...post, postind: response.data };
-          this.showEditPostModal = true;
+          editingPost.value = { ...post, postind: response.data };
+          showEditPostModal.value = true;
         })
         .catch((error) => {
           console.error('Error fetching comments:', error);
         });
-    },
+    };
 
-    closeEditPostModal() {
-      this.editingPost = null;
-      this.showEditPostModal = false;
-    },
+    const closeEditPostModal = () => {
+      editingPost.value = null;
+      showEditPostModal.value = false;
+    };
 
-    viewComments(post) {
+    const viewComments = (post) => {
       axios
         .get(`/viewComments/${post.id}`)
         .then((response) => {
-          this.selectedPost = { ...post, comments: response.data };
+          selectedPost.value = { ...post, comments: response.data };
         })
         .catch((error) => {
           console.error('Error fetching post:', error);
         });
-    },
+    };
 
-    savePost(newPostData) {
+    const savePost = (newPostData) => {
       axios
         .put(`/edit-post/${newPostData.id}`, { title: newPostData.title, body: newPostData.body })
         .then((response) => {
-          this.selectedPost = null;
+          selectedPost.value = null;
+          emit('post-saved');
           Swal.fire({
                 icon: 'success',
                 title: 'Post Successfully Edited',
@@ -165,18 +184,17 @@ export default {
         .catch((error) => {
           console.error('Error fetching post:', error);
         });
-    },
+    };
 
-    addComment(newCommentText) {
+    const addComment = (newCommentText) => {
       console.log(newCommentText);
-      console.log(this.selectedPost.id);
-      if (this.selectedPost) {
-        const post_id = this.selectedPost.id;
+      console.log(selectedPost.value.id);
+      if (selectedPost.value) {
+        const post_id = selectedPost.value.id;
         axios
           .post(`/addComment/${post_id}`, { text: newCommentText })
           .then((response) => {
-            // Close the comment modal after adding the comment
-            this.selectedPost = null;
+            selectedPost.value = null;
             Swal.fire({
                 icon: 'success',
                 title: 'Commented Successfully',
@@ -207,15 +225,37 @@ export default {
             console.error('Error:', error.message);
           });
       }
-    },
+    };
+
+    return {
+      postsData,
+      showEditPostModal,
+      editingPost,
+      selectedPost,
+      reloadPosts,
+      deletePost,
+      viewEditPostModal,
+      closeEditPostModal,
+      viewComments,
+      savePost,
+      addComment,
+      
+    };
   },
 
   components: {
     CommentModal,
     EditPostModal,
   },
+
+  created() {
+    this.reloadPosts();
+  },
 };
+
+
 </script>
+
 <style>
 /* Add custom styling for the post list */
 .container {

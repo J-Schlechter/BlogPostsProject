@@ -21,7 +21,7 @@
           <!-- Add the image upload section -->
           <div class="field">
             <label class="label">Upload Image</label>
-            <div class="file is-boxed">
+            <div class="file">
               <label class="file-label">
                 <input class="file-input" type="file" name="image" @change="onImageChange" />
                 <span class="file-cta">
@@ -51,7 +51,7 @@ import { ref, emit } from 'vue';
 import Swal from 'sweetalert2';
 
 export default {
-  emits: ['close-modal'],
+  emits: ['close-modal', 'save-post'],
   props: {
     showNewPostProp: {
       type: Boolean,
@@ -64,7 +64,7 @@ export default {
     const imageFile = ref(null);
 
     const closeModal = () => {
-      emit('close-modal');
+      emit('close-modal', 'save-post');
     };
 
     const onImageChange = (event) => {
@@ -87,6 +87,7 @@ export default {
       });
     };
 
+
     const savePost = () => {
       const formData = new FormData();
       formData.append('title', fields.value.title);
@@ -101,6 +102,7 @@ export default {
           fields.value.body = '';
           errorMessage.value = '';
           newPostAlert();
+          
         })
         .catch((error) => {
           console.error(error);

@@ -10,6 +10,11 @@
       @logout="logout"
       @login-success="handleLoginSuccess"
     />
+    <breadcrumb
+      :chosen-post="chosenPost"
+      @all-posts="viewAllPosts"
+      @user-posts="viewUserPosts"
+    />
     <ConfirmationModal
       :is-active="isConfirmationModalVisible"
       @confirmed="deletePost"
@@ -31,12 +36,12 @@
       @open-modal="openRegisterModal"
       @close-modal="closeRegisterModal"
     />
-    <AllPosts :posts="postsData" :current-user="currentUser"  />
+    <AllPosts :posts="postsData" :current-user="currentUser" />
   </div>
 </template>
 
 <script>
-import { defineComponent, ref, computed, onMounted } from 'vue';
+import { defineComponent, ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import Navbar from './navbar.vue';
 import ConfirmationModal from './ConfirmationModal.vue';
@@ -45,9 +50,9 @@ import RegisterUser from './RegisterUser.vue';
 import LoginModal from './LoginModal.vue';
 import AllPosts from './allPosts.vue';
 import Swal from 'sweetalert2';
+import Breadcrumb from './breadcrumb.vue';
 
 export default defineComponent({
-  emits: ['open-new-post-modal', 'open-login-modal', 'open-register-modal'],
   components: {
     Navbar,
     ConfirmationModal,
@@ -55,10 +60,10 @@ export default defineComponent({
     RegisterUser,
     LoginModal,
     AllPosts,
+    Breadcrumb,
   },
 
-  
-  setup() {
+  setup( props, {emit}) {
     const isNewPostModalVisible = ref(false);
     const isConfirmationModalVisible = ref(false);
     const showNewPostModal = ref(false);
@@ -67,6 +72,10 @@ export default defineComponent({
     const isAuthenticated = ref(false);
     const currentUser = ref(null);
     const errorMessage = ref('');
+    const postsData = ref([]);
+
+    const chosenPost = ref('allPosts');
+
     const currentUserName = computed(() => {
       return currentUser.value ? currentUser.value : 'Guest';
     });
@@ -103,17 +112,11 @@ export default defineComponent({
     };
 
     const closeNewPostModal = () => {
-      
       showNewPostModal.value = false;
+      emit('save-post');
     };
 
-    const handlePostSaved = (postData) => {
-      console.log('New post data:', postData);
-      closeNewPostModal();
-      // Assuming fields is a ref that holds post data
-      fields.value.title = '';
-      fields.value.body = '';
-      
+    const handlePostSaved = () => {
       alert('New post created successfully!');
     };
 
@@ -122,20 +125,14 @@ export default defineComponent({
       alert('An error occurred while saving the new post. Please try again later.');
     };
 
-    const newPost = () => {
-      axios
-        .post('/newPost', fields.value)
-        .then((response) => {
-          console.log(response.data);
-          fields.value.title = '';
-          fields.value.body = '';
-          errorMessage.value = '';
-          this.$forceUpdate();
-        })
-        .catch((error) => {
-          console.error(error);
-          errorMessage.value = 'An error occurred while saving the post. Please try again later.';
-        });
+    const allPostBreadcrumb = () => {
+      chosenPost.value = 'allPosts';
+      console.log(chosenPost.value)
+    };
+
+    const userPostBreadcrumb = () => {
+      chosenPost.value = 'userPosts';
+      console.log(chosenPost.value)
     };
 
     const openRegisterModal = () => {
@@ -163,29 +160,48 @@ export default defineComponent({
     };
 
     const handleLoginSuccess = (data) => {
-      
       isAuthenticated.value = true;
       currentUser.value = data.name;
       closeLoginModal();
       Swal.fire({
-                icon: 'success',
-                title: 'User Successfully Logged in.',
-                timer: 1000,
-                timerProgressBar: true,
-                didOpen: () => {
-                  Swal.showLoading();
-                },
-                willClose: () => {
-                  
-                },
-              });
+        icon: 'success',
+        title: 'User Successfully Logged in.',
+        timer: 1000,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        willClose: () => {},
+      });
     };
 
-    const postsData = ref([]);
+    const viewAllPosts = () => {
+      chosenPost.value = 'allPosts';
+      axios
+        .get('/posts')
+        .then((response) => {
+          postsData.value = response.data;
+        })
+        .catch((error) => {
+          console.error('Error fetching posts data:', error);
+        });
+    };
+
+    const viewUserPosts = () => {
+      chosenPost.value = 'userPosts';
+      axios
+        .get('/yourPosts')
+        .then((response) => {
+          postsData.value = response.data;
+        })
+        .catch((error) => {
+          console.error('Error fetching posts data:', error);
+        });
+    };
 
     onMounted(() => {
       axios
-        .get('/posts') // Change the API endpoint to match your backend route for fetching posts
+        .get('/posts')
         .then((response) => {
           postsData.value = response.data;
         })
@@ -211,11 +227,16 @@ export default defineComponent({
       isMenuOpen: ref(false),
       isAuthenticated,
       currentUser,
-      newPost,
       handleLoginSuccess,
       currentUserName,
       logout,
       postsData,
+      handlePostSaved,
+      chosenPost,
+      allPostBreadcrumb,
+      userPostBreadcrumb,
+      viewAllPosts,
+      viewUserPosts,
     };
   },
 });
