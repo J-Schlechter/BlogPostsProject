@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar is-primary is-touch" role="navigation" aria-label="main navigation">
+  <nav class="navbar is-primary is-flex-desktop-only" role="navigation" aria-label="main navigation">
     <!-- Navbar brand/logo -->
     <!-- ... Your brand/logo HTML code ... -->
 
@@ -18,17 +18,17 @@
         <!-- Show different content based on the authentication status -->
         <div></div>
         <template v-if="isAuthenticated" >
-          
+
           <!-- Show logout button when logged in -->
           <div class="navbar-item logged-in-button">
           <div class="navbar-item logged-in-text">Logged in as {{ currentUser }}   </div>
           <button class="button is-danger" @click="logout">Log Out</button>
         </div>
         </template>
-        
+
         <template v-else>
           <div>
-            
+
             <div class="buttons logged-out-button">
               <div class="navbar-item logged-out-text">Not Logged in</div>
               <button class="button is-info" @click="openLoginModal">Log In</button>
@@ -54,12 +54,12 @@ export default {
     'login-success',
   ],
   props: { isMenuOpen : { type: Boolean }, isAuthenticated : { type: Boolean }, currentUser : {type: String} },
-  
-  
+
+
   setup(props, { emit }) {
     // Destructure the props directly
     const { isMenuOpen, isAuthenticated, currentUser } = props;
-    
+
     // Computed property to get the current user's name or 'Guest' when not authenticated
     const currentUserName = computed(() => {
       return isAuthenticated ? currentUser.name : 'Guest';
@@ -85,7 +85,7 @@ export default {
     return {
       // Reactive data
       currentUserName,
-      
+
       // Methods
       openNewPostModal,
       openRegisterModal,
@@ -109,4 +109,7 @@ export default {
   padding-top: 10px;
   padding-bottom: 20px;
 }
+
+
+
 </style>

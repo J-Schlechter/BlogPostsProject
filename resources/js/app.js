@@ -3,6 +3,7 @@ import App from './components/App.vue';
 
 import navbar from './components/navbar.vue';
 import allPosts from './components/allPosts.vue';
+import UserPosts from './components/userPosts.vue';
 import NewPostModal from './components/NewPostModal.vue';
 import RegisterUser from './components/RegisterUser.vue';
 import LoginModal from './components/LoginModal.vue';
@@ -32,7 +33,7 @@ app.component('allPosts', allPosts);
 app.component('NewPostModal', NewPostModal);
 app.component('RegisterUser', RegisterUser);
 app.component('LoginModal', LoginModal);
-
+app.component('UserPosts', UserPosts);
 
 const isAuthenticatedRef = ref(isAuthenticated.value);
 

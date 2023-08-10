@@ -1,6 +1,6 @@
 <template>
     <div>
-      <div v-for="post in postsData" :key="post.id" :dataFromParent="dataFromParent" @post-saved="reloadPosts" >
+      <div v-for="post in postsData" :key="post.id">
         <div class="container is-max-desktop pb-3 rounded-block">
           <div class="notification is-primary rounded-block">
             <div class="columns">
@@ -8,7 +8,7 @@
                 <b class="title">{{ post.title }}</b>
                 <br>
                 <h2 class="subtitle">{{ post.body }}</h2>
-                <h5>Posted by {{ post.user.name }}</h5>
+
                 <div class="button-container">
                   <template v-if="currentUser === post.user.name">
                     <button class="button is-warning" @click="viewEditPostModal(post)">Edit Post</button>
@@ -40,7 +40,7 @@
 
   <script>
   import CommentModal from './CommentModal.vue';
-  import { ref, onMounted, onUnmounted, inject } from 'vue';
+  import { ref, onMounted, onUnmounted, watch } from 'vue';
   import axios from 'axios';
   import Swal from 'sweetalert2';
   import EditPostModal from './EditPostModal.vue';
@@ -55,7 +55,6 @@
         type: String,
         default: null,
       },
-      dataFromParent: String,
     },
 
 
@@ -65,13 +64,11 @@
       const editingPost = ref(null);
       const selectedPost = ref(null);
       const postCount = ref(null);
-      const dataFromParent = inject('dataFromParent');
-
+      console.log(props.currentUser)
       const reloadPosts = () => {
         axios
-          .get('/posts')
+          .get('/userPosts')
           .then((response) => {
-            console.log(dataFromParent)
             console.log(response.data)
             postsData.value = response.data;
           })
@@ -227,7 +224,6 @@
         viewComments,
         savePost,
         addComment,
-        dataFromParent,
       };
     },
 

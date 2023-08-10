@@ -49,6 +49,7 @@
 import axios from 'axios';
 import { ref, emit } from 'vue';
 import Swal from 'sweetalert2';
+import app from './App.vue'
 
 export default {
   emits: ['close-modal', 'save-post'],
@@ -88,7 +89,7 @@ export default {
     };
 
 
-    const savePost = () => {
+    const savePost = () => {newPostAlert
       const formData = new FormData();
       formData.append('title', fields.value.title);
       formData.append('body', fields.value.body);
@@ -104,6 +105,7 @@ export default {
           fields.value.title = '';
           fields.value.body = '';
           errorMessage.value = '';
+          emit('save-post');
           newPostAlert();
     })
         .catch((error) => {
