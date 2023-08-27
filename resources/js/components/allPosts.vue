@@ -69,7 +69,7 @@
 
       const reloadPosts = () => {
         axios
-          .get('/posts')
+          .get('/')
           .then((response) => {
             console.log(dataFromParent)
             console.log(response.data)
