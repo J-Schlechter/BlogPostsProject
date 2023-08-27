@@ -99,7 +99,7 @@ export default {
       }
 
       axios
-        .post('/newPost', formData)
+        .post('/create-post', formData)
         .then((response) => {
           console.log(response.data);
           fields.value.title = '';
